@@ -23,13 +23,13 @@ export default async function AdminDashboard() {
   const recentSessions = sessions.slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-white">
       <AppNav userRole={admin.role} />
 
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">Admin Console</h1>
-          <p className="text-gray-400 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900">Admin Console</h1>
+          <p className="text-gray-600 mt-1">
             Manage users, scenarios, and sessions
           </p>
         </div>
@@ -56,10 +56,10 @@ export default async function AdminDashboard() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="bg-gray-900 rounded-2xl border border-gray-800 p-5"
+              className="bg-gray-50 rounded-2xl border border-gray-200 p-5"
             >
               <div
-                className={`text-3xl font-bold text-${stat.color}-400 mb-1`}
+                className={`text-3xl font-bold text-${stat.color}-500 mb-1`}
               >
                 {stat.value}
               </div>
@@ -72,10 +72,10 @@ export default async function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
             href="/admin/users"
-            className="bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-2xl p-6 transition-colors group"
+            className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-2xl p-6 transition-colors group"
           >
             <div className="text-2xl mb-3">👥</div>
-            <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+            <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
               Manage Users
             </h3>
             <p className="text-gray-500 text-sm mt-1">
@@ -85,10 +85,10 @@ export default async function AdminDashboard() {
 
           <Link
             href="/admin/scenarios"
-            className="bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-2xl p-6 transition-colors group"
+            className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-2xl p-6 transition-colors group"
           >
             <div className="text-2xl mb-3">🎭</div>
-            <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+            <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
               Manage Scenarios
             </h3>
             <p className="text-gray-500 text-sm mt-1">
@@ -98,10 +98,10 @@ export default async function AdminDashboard() {
 
           <Link
             href="/admin/sessions"
-            className="bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-2xl p-6 transition-colors group"
+            className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-2xl p-6 transition-colors group"
           >
             <div className="text-2xl mb-3">📊</div>
-            <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+            <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
               View Sessions
             </h3>
             <p className="text-gray-500 text-sm mt-1">
@@ -111,12 +111,12 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Recent sessions */}
-        <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
+        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-white">Recent Sessions</h2>
+            <h2 className="font-semibold text-gray-900">Recent Sessions</h2>
             <Link
               href="/admin/sessions"
-              className="text-blue-400 hover:text-blue-300 text-sm"
+              className="text-blue-600 hover:text-blue-500 text-sm"
             >
               View all →
             </Link>
@@ -130,13 +130,13 @@ export default async function AdminDashboard() {
                 <Link
                   key={s.id}
                   href={`/results/${s.id}`}
-                  className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-800 transition-colors"
+                  className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-100 transition-colors"
                 >
                   <div>
-                    <span className="text-white text-sm font-medium">
+                    <span className="text-gray-900 text-sm font-medium">
                       {s.clerk_user_id.slice(0, 16)}...
                     </span>
-                    <span className="text-gray-500 text-xs ml-3">
+                    <span className="text-gray-400 text-xs ml-3">
                       {new Date(s.started_at).toLocaleDateString()}
                     </span>
                   </div>

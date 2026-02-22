@@ -147,9 +147,9 @@ export default function ScenariosClient({ initialScenarios }: Props) {
   };
 
   const difficultyColor = {
-    easy: "text-green-400",
-    medium: "text-yellow-400",
-    hard: "text-red-400",
+    easy: "text-green-600",
+    medium: "text-yellow-600",
+    hard: "text-red-500",
   };
 
   return (
@@ -164,14 +164,14 @@ export default function ScenariosClient({ initialScenarios }: Props) {
       {/* Form modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 rounded-2xl border border-gray-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-5">
+          <div className="bg-white rounded-2xl border border-gray-200 w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-gray-900">
                 {editingId ? "Edit Scenario" : "New Scenario"}
               </h2>
               <button
                 onClick={() => setShowForm(false)}
-                className="text-gray-500 hover:text-white"
+                className="text-gray-500 hover:text-gray-900"
               >
                 ✕
               </button>
@@ -179,7 +179,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label className="block text-xs text-gray-400 mb-1">
+                <label className="block text-xs text-gray-600 mb-1">
                   Scenario Name
                 </label>
                 <input
@@ -189,12 +189,12 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                     setForm((f) => ({ ...f, name: e.target.value }))
                   }
                   placeholder="Budget-Conscious Bob"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-gray-400 mb-1">
+                <label className="block text-xs text-gray-600 mb-1">
                   Product Type
                 </label>
                 <input
@@ -204,12 +204,12 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                     setForm((f) => ({ ...f, product_type: e.target.value }))
                   }
                   placeholder="SaaS Software"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-gray-400 mb-1">
+                <label className="block text-xs text-gray-600 mb-1">
                   Difficulty
                 </label>
                 <select
@@ -220,7 +220,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                       difficulty: e.target.value as FormData["difficulty"],
                     }))
                   }
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
                 >
                   <option value="easy">Easy</option>
                   <option value="medium">Medium</option>
@@ -229,7 +229,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
               </div>
 
               <div className="col-span-2">
-                <label className="block text-xs text-gray-400 mb-1">
+                <label className="block text-xs text-gray-600 mb-1">
                   Persona Style
                 </label>
                 <div className="grid grid-cols-4 gap-2">
@@ -245,7 +245,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                       className={`py-2 rounded-lg text-sm capitalize transition-colors ${
                         form.persona_style === style
                           ? "bg-blue-600 text-white"
-                          : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
                       {style}
@@ -255,9 +255,9 @@ export default function ScenariosClient({ initialScenarios }: Props) {
               </div>
 
               <div className="col-span-2">
-                <label className="block text-xs text-gray-400 mb-1">
+                <label className="block text-xs text-gray-600 mb-1">
                   Objection Pool{" "}
-                  <span className="text-gray-600">(comma-separated)</span>
+                  <span className="text-gray-400">(comma-separated)</span>
                 </label>
                 <input
                   type="text"
@@ -266,7 +266,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                     setForm((f) => ({ ...f, objection_pool: e.target.value }))
                   }
                   placeholder="price, trust, need-to-think, spouse"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -292,9 +292,9 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                 },
               ].map((slider) => (
                 <div key={slider.key} className="col-span-2 md:col-span-1">
-                  <label className="block text-xs text-gray-400 mb-1">
+                  <label className="block text-xs text-gray-600 mb-1">
                     {slider.label}:{" "}
-                    <span className="text-white">
+                    <span className="text-gray-900">
                       {form[slider.key] as number}
                     </span>
                     /10
@@ -316,9 +316,9 @@ export default function ScenariosClient({ initialScenarios }: Props) {
               ))}
 
               <div className="col-span-2">
-                <label className="block text-xs text-gray-400 mb-1">
+                <label className="block text-xs text-gray-600 mb-1">
                   Success Criteria{" "}
-                  <span className="text-gray-600">(one per line)</span>
+                  <span className="text-gray-400">(one per line)</span>
                 </label>
                 <textarea
                   value={form.success_criteria}
@@ -330,19 +330,19 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                   }
                   rows={4}
                   placeholder="Build rapport&#10;Handle the price objection&#10;Ask for the close"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500 resize-none"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-none"
                 />
               </div>
 
               {/* Divider */}
-              <div className="col-span-2 border-t border-gray-700/60 pt-2">
+              <div className="col-span-2 border-t border-gray-200 pt-2">
                 <p className="text-xs text-gray-500 uppercase tracking-wider">Prospect Character</p>
               </div>
 
               <div className="col-span-2">
-                <label className="block text-xs text-gray-400 mb-1">
+                <label className="block text-xs text-gray-600 mb-1">
                   Client Description{" "}
-                  <span className="text-gray-600">(backstory, personality, job, etc.)</span>
+                  <span className="text-gray-400">(backstory, personality, job, etc.)</span>
                 </label>
                 <textarea
                   value={form.client_description}
@@ -351,13 +351,13 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                   }
                   rows={3}
                   placeholder="e.g. Mid-level marketing manager at a 50-person company. Skeptical of new software after a bad experience with a CRM rollout last year. Values ROI and quick onboarding."
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500 resize-none"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-gray-400 mb-1">
-                  Client Age <span className="text-gray-600">(optional)</span>
+                <label className="block text-xs text-gray-600 mb-1">
+                  Client Age <span className="text-gray-400">(optional)</span>
                 </label>
                 <input
                   type="number"
@@ -368,12 +368,12 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                     setForm((f) => ({ ...f, client_age: e.target.value }))
                   }
                   placeholder="45"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-gray-400 mb-1">
+                <label className="block text-xs text-gray-600 mb-1">
                   Prospect Voice
                 </label>
                 <select
@@ -381,7 +381,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, voice: e.target.value }))
                   }
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
                 >
                   {VOICE_OPTIONS.map((v) => (
                     <option key={v.value} value={v.value}>
@@ -396,13 +396,13 @@ export default function ScenariosClient({ initialScenarios }: Props) {
               <button
                 onClick={handleSave}
                 disabled={saving || !form.name}
-                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 text-white rounded-xl text-sm font-medium transition-colors"
+                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-200 text-white rounded-xl text-sm font-medium transition-colors"
               >
                 {saving ? "Saving..." : editingId ? "Save Changes" : "Create Scenario"}
               </button>
               <button
                 onClick={() => setShowForm(false)}
-                className="px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-sm transition-colors"
+                className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm transition-colors"
               >
                 Cancel
               </button>
@@ -416,11 +416,11 @@ export default function ScenariosClient({ initialScenarios }: Props) {
         {scenarios.map((s) => (
           <div
             key={s.id}
-            className="bg-gray-900 border border-gray-800 rounded-2xl p-5"
+            className="bg-gray-50 border border-gray-200 rounded-2xl p-5"
           >
             <div className="flex items-start justify-between mb-3">
               <div>
-                <h3 className="font-semibold text-white">{s.name}</h3>
+                <h3 className="font-semibold text-gray-900">{s.name}</h3>
                 <p className="text-gray-500 text-xs mt-0.5">
                   {s.product_type}
                 </p>
@@ -428,14 +428,14 @@ export default function ScenariosClient({ initialScenarios }: Props) {
               <div className="flex gap-2">
                 <button
                   onClick={() => openEdit(s)}
-                  className="text-xs px-3 py-1 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition-colors"
+                  className="text-xs px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(s.id)}
                   disabled={deleting === s.id}
-                  className="text-xs px-3 py-1 rounded-lg bg-red-900/40 hover:bg-red-900/60 text-red-400 transition-colors disabled:opacity-50"
+                  className="text-xs px-3 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors disabled:opacity-50"
                 >
                   Delete
                 </button>
@@ -446,11 +446,11 @@ export default function ScenariosClient({ initialScenarios }: Props) {
               <span
                 className={`px-2 py-0.5 rounded-full font-medium ${
                   difficultyColor[s.difficulty]
-                } bg-gray-800`}
+                } bg-gray-100`}
               >
                 {s.difficulty}
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 capitalize">
+              <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 capitalize">
                 {s.persona_style}
               </span>
             </div>

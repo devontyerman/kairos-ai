@@ -67,7 +67,7 @@ export default async function ResultsPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-white">
       <AppNav userRole={user.role} />
 
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
@@ -76,14 +76,14 @@ export default async function ResultsPage({ params }: Props) {
           <div>
             <Link
               href="/train"
-              className="text-blue-400 hover:text-blue-300 text-sm mb-2 inline-flex items-center gap-1"
+              className="text-blue-600 hover:text-blue-500 text-sm mb-2 inline-flex items-center gap-1"
             >
               ← Back to Training
             </Link>
-            <h1 className="text-3xl font-bold text-white mt-1">
+            <h1 className="text-3xl font-bold text-gray-900 mt-1">
               Session Report
             </h1>
-            <p className="text-gray-400 mt-1">
+            <p className="text-gray-600 mt-1">
               {scenario?.name ?? "Training Session"} •{" "}
               {new Date(session.started_at).toLocaleDateString("en-US", {
                 month: "long",
@@ -109,7 +109,7 @@ export default async function ResultsPage({ params }: Props) {
                     cy="18"
                     r="15.9"
                     fill="none"
-                    stroke="#1f2937"
+                    stroke="#e5e7eb"
                     strokeWidth="3"
                   />
                   <circle
@@ -129,14 +129,14 @@ export default async function ResultsPage({ params }: Props) {
                   </span>
                 </div>
               </div>
-              <span className="text-gray-500 text-xs mt-1">Score</span>
+              <span className="text-gray-400 text-xs mt-1">Score</span>
             </div>
           )}
         </div>
 
         {!report ? (
-          <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8 text-center">
-            <p className="text-gray-400">
+          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-8 text-center">
+            <p className="text-gray-600">
               Report is being generated... Refresh in a moment.
             </p>
           </div>
@@ -144,21 +144,21 @@ export default async function ResultsPage({ params }: Props) {
           <>
             {/* Summary */}
             {r?.summary && (
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-white mb-2">Summary</h2>
-                <p className="text-gray-300 leading-relaxed">{r.summary}</p>
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-gray-900 mb-2">Summary</h2>
+                <p className="text-gray-700 leading-relaxed">{r.summary}</p>
               </div>
             )}
 
             {/* Strengths + Areas to Improve */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-green-400 mb-3 flex items-center gap-2">
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-green-600 mb-3 flex items-center gap-2">
                   ✓ Strengths
                 </h2>
                 <ul className="space-y-2">
                   {(r?.strengths ?? []).map((s, i) => (
-                    <li key={i} className="flex gap-2 text-gray-300 text-sm">
+                    <li key={i} className="flex gap-2 text-gray-700 text-sm">
                       <span className="text-green-500 mt-0.5">•</span>
                       {s}
                     </li>
@@ -166,13 +166,13 @@ export default async function ResultsPage({ params }: Props) {
                 </ul>
               </div>
 
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-red-400 mb-3 flex items-center gap-2">
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-red-500 mb-3 flex items-center gap-2">
                   ✗ Areas to Improve
                 </h2>
                 <ul className="space-y-2">
                   {(r?.areas_to_improve ?? []).map((a, i) => (
-                    <li key={i} className="flex gap-2 text-gray-300 text-sm">
+                    <li key={i} className="flex gap-2 text-gray-700 text-sm">
                       <span className="text-red-500 mt-0.5">•</span>
                       {a}
                     </li>
@@ -183,26 +183,26 @@ export default async function ResultsPage({ params }: Props) {
 
             {/* Objections Detected */}
             {r?.objections_detected && r.objections_detected.length > 0 && (
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-white mb-4">
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-gray-900 mb-4">
                   Objections Detected
                 </h2>
                 <div className="space-y-4">
                   {r.objections_detected.map((obj, i) => (
                     <div
                       key={i}
-                      className="border border-gray-800 rounded-xl p-4"
+                      className="border border-gray-200 rounded-xl p-4"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-white capitalize">
+                        <span className="font-medium text-gray-900 capitalize">
                           {obj.objection}
                         </span>
                         <div className="flex items-center gap-3">
-                          <span className="text-gray-500 text-xs">
+                          <span className="text-gray-400 text-xs">
                             {obj.count}x raised
                           </span>
                           <div className="flex items-center gap-1">
-                            <div className="w-16 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                            <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                               <div
                                 className={`h-full rounded-full ${
                                   obj.handling_score >= 7
@@ -216,14 +216,14 @@ export default async function ResultsPage({ params }: Props) {
                                 }}
                               />
                             </div>
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-gray-600">
                               {obj.handling_score}/10
                             </span>
                           </div>
                         </div>
                       </div>
                       {obj.example_snippet && (
-                        <p className="text-gray-500 text-xs italic border-l-2 border-gray-700 pl-3">
+                        <p className="text-gray-500 text-xs italic border-l-2 border-gray-300 pl-3">
                           &ldquo;{obj.example_snippet}&rdquo;
                         </p>
                       )}
@@ -235,17 +235,17 @@ export default async function ResultsPage({ params }: Props) {
 
             {/* Missed Opportunities */}
             {r?.missed_opportunities && r.missed_opportunities.length > 0 && (
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-orange-400 mb-4">
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-orange-500 mb-4">
                   Missed Opportunities
                 </h2>
                 <div className="space-y-3">
                   {r.missed_opportunities.map((mo, i) => (
                     <div
                       key={i}
-                      className="border border-gray-800 rounded-xl p-4"
+                      className="border border-gray-200 rounded-xl p-4"
                     >
-                      <p className="text-white text-sm mb-2">
+                      <p className="text-gray-900 text-sm mb-2">
                         {mo.description}
                       </p>
                       {mo.transcript_snippet && (
@@ -261,26 +261,26 @@ export default async function ResultsPage({ params }: Props) {
 
             {/* Drills */}
             {r?.drills && r.drills.length > 0 && (
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-blue-400 mb-4">
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-blue-600 mb-4">
                   Recommended Drills
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {r.drills.map((drill, i) => (
                     <div
                       key={i}
-                      className="bg-gray-800/60 rounded-xl p-4 border border-gray-700"
+                      className="bg-gray-100 rounded-xl p-4 border border-gray-200"
                     >
                       <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold mb-3">
                         {i + 1}
                       </div>
-                      <h3 className="font-medium text-white text-sm mb-2">
+                      <h3 className="font-medium text-gray-900 text-sm mb-2">
                         {drill.title}
                       </h3>
-                      <p className="text-gray-400 text-xs mb-2">
+                      <p className="text-gray-600 text-xs mb-2">
                         {drill.description}
                       </p>
-                      <p className="text-blue-400/70 text-xs">
+                      <p className="text-blue-500 text-xs">
                         Goal: {drill.goal}
                       </p>
                     </div>
@@ -291,11 +291,11 @@ export default async function ResultsPage({ params }: Props) {
 
             {/* Next Session Plan */}
             {r?.next_session_plan && (
-              <div className="bg-blue-900/20 border border-blue-800/40 rounded-2xl p-6">
-                <h2 className="font-semibold text-blue-300 mb-2">
+              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+                <h2 className="font-semibold text-blue-600 mb-2">
                   Next Session Plan
                 </h2>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-700 leading-relaxed">
                   {r.next_session_plan}
                 </p>
               </div>
@@ -305,8 +305,8 @@ export default async function ResultsPage({ params }: Props) {
 
         {/* Transcript */}
         {turns.length > 0 && (
-          <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-            <h2 className="font-semibold text-white mb-4">Full Transcript</h2>
+          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+            <h2 className="font-semibold text-gray-900 mb-4">Full Transcript</h2>
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {turns.map((turn) => (
                 <div
@@ -317,7 +317,7 @@ export default async function ResultsPage({ params }: Props) {
                     className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold ${
                       turn.speaker === "agent"
                         ? "bg-blue-600 text-white"
-                        : "bg-gray-700 text-gray-300"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     {turn.speaker === "agent" ? "You" : "AI"}
@@ -326,7 +326,7 @@ export default async function ResultsPage({ params }: Props) {
                     className={`max-w-[75%] px-3 py-2 rounded-xl text-sm ${
                       turn.speaker === "agent"
                         ? "bg-blue-600/70 text-white"
-                        : "bg-gray-800 text-gray-200"
+                        : "bg-gray-100 text-gray-800"
                     }`}
                   >
                     {turn.text}

@@ -351,27 +351,27 @@ export default function TrainClient({ scenarios, userRole }: Props) {
   );
 
   const difficultyColor = {
-    easy: "text-green-400 bg-green-400/10",
-    medium: "text-yellow-400 bg-yellow-400/10",
-    hard: "text-red-400 bg-red-400/10",
+    easy: "text-green-600 bg-green-50",
+    medium: "text-yellow-600 bg-yellow-50",
+    hard: "text-red-500 bg-red-50",
   };
 
   const personaColor = {
-    friendly: "text-blue-400",
-    neutral: "text-gray-400",
-    skeptical: "text-orange-400",
-    combative: "text-red-400",
+    friendly: "text-blue-600",
+    neutral: "text-gray-500",
+    skeptical: "text-orange-500",
+    combative: "text-red-500",
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <AppNav userRole={userRole} />
 
       <div className="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full px-4 py-6 gap-6">
         {/* Left: Scenario Selection + Controls */}
         <div className="w-full lg:w-80 flex flex-col gap-4">
-          <div className="bg-gray-900 rounded-2xl border border-gray-800 p-5">
-            <h2 className="font-semibold text-white mb-4">Select Scenario</h2>
+          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5">
+            <h2 className="font-semibold text-gray-900 mb-4">Select Scenario</h2>
 
             <div className="space-y-2">
               {scenarios.map((s) => (
@@ -384,21 +384,21 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                   className={`w-full text-left p-3 rounded-xl border transition-all ${
                     selectedScenarioId === s.id
                       ? "border-blue-500 bg-blue-500/10"
-                      : "border-gray-700 hover:border-gray-600 bg-gray-800/50"
+                      : "border-gray-200 hover:border-gray-300 bg-gray-50"
                   } ${isActive ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
-                  <div className="font-medium text-white text-sm">{s.name}</div>
+                  <div className="font-medium text-gray-900 text-sm">{s.name}</div>
                   <div className="flex items-center gap-2 mt-1">
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                         difficultyColor[s.difficulty] ??
-                        "text-gray-400 bg-gray-700"
+                        "text-gray-600 bg-gray-200"
                       }`}
                     >
                       {s.difficulty}
                     </span>
                     <span
-                      className={`text-xs ${personaColor[s.persona_style] ?? "text-gray-400"}`}
+                      className={`text-xs ${personaColor[s.persona_style] ?? "text-gray-500"}`}
                     >
                       {s.persona_style}
                     </span>
@@ -408,7 +408,7 @@ export default function TrainClient({ scenarios, userRole }: Props) {
             </div>
 
             {scenarios.length === 0 && (
-              <p className="text-gray-500 text-sm text-center py-4">
+              <p className="text-gray-400 text-sm text-center py-4">
                 No scenarios yet. Ask an admin to create one.
               </p>
             )}
@@ -416,11 +416,11 @@ export default function TrainClient({ scenarios, userRole }: Props) {
 
           {/* Scenario detail */}
           {selectedScenario && (
-            <div className="bg-gray-900 rounded-2xl border border-gray-800 p-5 text-sm">
-              <h3 className="font-medium text-gray-300 mb-3">
+            <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 text-sm">
+              <h3 className="font-medium text-gray-700 mb-3">
                 Scenario Details
               </h3>
-              <div className="space-y-2 text-gray-400">
+              <div className="space-y-2 text-gray-600">
                 <div>
                   <span className="text-gray-500">Product:</span>{" "}
                   {selectedScenario.product_type}
@@ -439,7 +439,7 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                     {Array.isArray(selectedScenario.success_criteria) &&
                       selectedScenario.success_criteria.map((c, i) => (
                         <li key={i} className="flex gap-2">
-                          <span className="text-gray-600">•</span>
+                          <span className="text-gray-400">•</span>
                           <span>{c}</span>
                         </li>
                       ))}
@@ -457,7 +457,7 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                 disabled={
                   !selectedScenarioId || sessionState === "connecting"
                 }
-                className="w-full py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-xl font-semibold transition-colors shadow-lg shadow-blue-500/20"
+                className="w-full py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-200 disabled:cursor-not-allowed text-white rounded-xl font-semibold transition-colors shadow-lg shadow-blue-500/20"
               >
                 {sessionState === "connecting"
                   ? "Connecting..."
@@ -475,14 +475,14 @@ export default function TrainClient({ scenarios, userRole }: Props) {
             )}
 
             {sessionState === "ending" && (
-              <div className="w-full py-4 bg-gray-800 text-gray-300 rounded-xl font-semibold text-center">
+              <div className="w-full py-4 bg-gray-100 text-gray-700 rounded-xl font-semibold text-center">
                 Generating report...
               </div>
             )}
           </div>
 
           {error && (
-            <div className="bg-red-900/30 border border-red-700 rounded-xl p-4 text-red-300 text-sm">
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-600 text-sm">
               {error}
             </div>
           )}
@@ -491,11 +491,11 @@ export default function TrainClient({ scenarios, userRole }: Props) {
         {/* Right: Live transcript + status */}
         <div className="flex-1 flex flex-col gap-4">
           {/* Status bar */}
-          <div className="bg-gray-900 rounded-2xl border border-gray-800 p-4 flex items-center gap-3">
+          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
             <div
               className={`w-3 h-3 rounded-full ${
                 sessionState === "idle" || sessionState === "connecting"
-                  ? "bg-gray-500"
+                  ? "bg-gray-400"
                   : sessionState === "agent_speaking"
                     ? "bg-green-500 animate-pulse"
                     : sessionState === "ai_speaking"
@@ -505,11 +505,11 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                         : "bg-green-500"
               }`}
             />
-            <span className="text-gray-300 text-sm font-medium">
+            <span className="text-gray-700 text-sm font-medium">
               {statusLabel}
             </span>
             {isActive && (
-              <div className="ml-auto flex items-center gap-2 text-xs text-gray-500">
+              <div className="ml-auto flex items-center gap-2 text-xs text-gray-400">
                 <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
                 Live
               </div>
@@ -517,14 +517,14 @@ export default function TrainClient({ scenarios, userRole }: Props) {
           </div>
 
           {/* Transcript */}
-          <div className="flex-1 bg-gray-900 rounded-2xl border border-gray-800 p-5 overflow-y-auto min-h-0 max-h-[60vh] lg:max-h-none">
+          <div className="flex-1 bg-gray-50 rounded-2xl border border-gray-200 p-5 overflow-y-auto min-h-0 max-h-[60vh] lg:max-h-none">
             {transcript.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-16">
                 <div className="text-5xl mb-4">🎙️</div>
-                <p className="text-gray-400 text-lg font-medium">
+                <p className="text-gray-600 text-lg font-medium">
                   Ready to train
                 </p>
-                <p className="text-gray-600 text-sm mt-2">
+                <p className="text-gray-400 text-sm mt-2">
                   Select a scenario and press Start Session to begin a live
                   voice conversation with your AI prospect.
                 </p>
@@ -540,7 +540,7 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                       className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold ${
                         turn.speaker === "agent"
                           ? "bg-blue-600 text-white"
-                          : "bg-gray-700 text-gray-300"
+                          : "bg-gray-200 text-gray-700"
                       }`}
                     >
                       {turn.speaker === "agent" ? "You" : "AI"}
@@ -549,7 +549,7 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                       className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                         turn.speaker === "agent"
                           ? "bg-blue-600 text-white"
-                          : "bg-gray-800 text-gray-100"
+                          : "bg-gray-100 text-gray-900"
                       }`}
                     >
                       {turn.text}
@@ -563,7 +563,7 @@ export default function TrainClient({ scenarios, userRole }: Props) {
 
           {/* Legend */}
           {isActive && (
-            <div className="flex items-center gap-6 text-xs text-gray-500 px-1">
+            <div className="flex items-center gap-6 text-xs text-gray-400 px-1">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                 Listening
@@ -573,7 +573,7 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                 AI Speaking
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-gray-500" />
+                <div className="w-2 h-2 rounded-full bg-gray-400" />
                 Idle
               </div>
             </div>

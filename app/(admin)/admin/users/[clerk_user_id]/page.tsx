@@ -128,9 +128,9 @@ export default async function UserProfilePage({ params }: Props) {
 
   const scoreColor = (score: number | null) => {
     if (score === null) return "text-gray-500";
-    if (score >= 80) return "text-green-400";
-    if (score >= 60) return "text-yellow-400";
-    return "text-red-400";
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-500";
   };
 
   const scoreRingColor = (score: number) =>
@@ -146,7 +146,7 @@ export default async function UserProfilePage({ params }: Props) {
   const maxScore = Math.max(...scoreTrend.map((s) => s.overall_score ?? 0), 1);
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-white">
       <AppNav userRole={admin.role} />
 
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
@@ -154,13 +154,13 @@ export default async function UserProfilePage({ params }: Props) {
         <div>
           <Link
             href="/admin/users"
-            className="text-blue-400 hover:text-blue-300 text-sm inline-flex items-center gap-1 mb-3"
+            className="text-blue-600 hover:text-blue-500 text-sm inline-flex items-center gap-1 mb-3"
           >
             ← Back to Users
           </Link>
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white">
+              <h1 className="text-3xl font-bold text-gray-900">
                 {getDisplayName(profileUser)}
               </h1>
               {(profileUser.first_name || profileUser.last_name) && (
@@ -170,8 +170,8 @@ export default async function UserProfilePage({ params }: Props) {
                 <span
                   className={`text-xs px-2 py-1 rounded-full font-medium ${
                     profileUser.role === "admin"
-                      ? "bg-purple-500/10 text-purple-400"
-                      : "bg-gray-700 text-gray-400"
+                      ? "bg-purple-50 text-purple-600"
+                      : "bg-gray-100 text-gray-600"
                   }`}
                 >
                   {profileUser.role}
@@ -196,7 +196,7 @@ export default async function UserProfilePage({ params }: Props) {
               <div className="flex flex-col items-center">
                 <div className="relative w-20 h-20">
                   <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
-                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1f2937" strokeWidth="3" />
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" strokeWidth="3" />
                     <circle
                       cx="18" cy="18" r="15.9" fill="none" strokeWidth="3"
                       strokeDasharray={`${avgScore} ${100 - avgScore}`}
@@ -208,7 +208,7 @@ export default async function UserProfilePage({ params }: Props) {
                     <span className={`text-xl font-bold ${scoreColor(avgScore)}`}>{avgScore}</span>
                   </div>
                 </div>
-                <span className="text-gray-500 text-xs mt-1">Avg Score</span>
+                <span className="text-gray-400 text-xs mt-1">Avg Score</span>
               </div>
             )}
           </div>
@@ -236,23 +236,23 @@ export default async function UserProfilePage({ params }: Props) {
                   : "—",
             },
           ].map((stat) => (
-            <div key={stat.label} className="bg-gray-900 rounded-2xl border border-gray-800 p-5">
-              <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+            <div key={stat.label} className="bg-gray-50 rounded-2xl border border-gray-200 p-5">
+              <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
               <div className="text-gray-500 text-xs">{stat.label}</div>
             </div>
           ))}
         </div>
 
         {totalSessions === 0 ? (
-          <div className="bg-gray-900 rounded-2xl border border-gray-800 p-12 text-center text-gray-500">
+          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-12 text-center text-gray-500">
             No completed sessions over 1 minute yet.
           </div>
         ) : (
           <>
             {/* Score trend */}
             {scoreTrend.length > 1 && (
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-white mb-4">Score Trend</h2>
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-gray-900 mb-4">Score Trend</h2>
                 <div className="flex items-end gap-2 h-24">
                   {scoreTrend.map((s, i) => {
                     const score = s.overall_score ?? 0;
@@ -272,7 +272,7 @@ export default async function UserProfilePage({ params }: Props) {
                           }`}
                           style={{ height: `${height}px` }}
                         />
-                        <span className="text-gray-600 text-xs">
+                        <span className="text-gray-400 text-xs">
                           {new Date(s.started_at).toLocaleDateString("en-US", {
                             month: "numeric",
                             day: "numeric",
@@ -288,7 +288,7 @@ export default async function UserProfilePage({ params }: Props) {
                   const last = scoreTrend[scoreTrend.length - 1].overall_score ?? 0;
                   const diff = last - first;
                   return (
-                    <p className={`text-sm mt-3 ${diff >= 0 ? "text-green-400" : "text-red-400"}`}>
+                    <p className={`text-sm mt-3 ${diff >= 0 ? "text-green-600" : "text-red-500"}`}>
                       {diff >= 0 ? "↑" : "↓"} {Math.abs(diff)} points since first session
                     </p>
                   );
@@ -298,18 +298,18 @@ export default async function UserProfilePage({ params }: Props) {
 
             {/* Strengths + Weaknesses */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-green-400 mb-4">Consistent Strengths</h2>
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-green-600 mb-4">Consistent Strengths</h2>
                 {topStrengths.length === 0 ? (
                   <p className="text-gray-500 text-sm">Not enough data yet.</p>
                 ) : (
                   <ul className="space-y-2">
                     {topStrengths.map((s, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                      <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
                         <span className="text-green-500 mt-0.5">•</span>
                         <span className="capitalize">{s.text}</span>
                         {s.count > 1 && (
-                          <span className="ml-auto text-xs text-gray-600">{s.count}x</span>
+                          <span className="ml-auto text-xs text-gray-400">{s.count}x</span>
                         )}
                       </li>
                     ))}
@@ -317,18 +317,18 @@ export default async function UserProfilePage({ params }: Props) {
                 )}
               </div>
 
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-red-400 mb-4">Recurring Weaknesses</h2>
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-red-500 mb-4">Recurring Weaknesses</h2>
                 {topWeaknesses.length === 0 ? (
                   <p className="text-gray-500 text-sm">Not enough data yet.</p>
                 ) : (
                   <ul className="space-y-2">
                     {topWeaknesses.map((w, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                      <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
                         <span className="text-red-500 mt-0.5">•</span>
                         <span className="capitalize">{w.text}</span>
                         {w.count > 1 && (
-                          <span className="ml-auto text-xs text-gray-600">{w.count}x</span>
+                          <span className="ml-auto text-xs text-gray-400">{w.count}x</span>
                         )}
                       </li>
                     ))}
@@ -339,16 +339,16 @@ export default async function UserProfilePage({ params }: Props) {
 
             {/* Objection handling */}
             {objections.length > 0 && (
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-white mb-4">Objection Handling</h2>
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-gray-900 mb-4">Objection Handling</h2>
                 <p className="text-gray-500 text-xs mb-4">Sorted by handling score — lowest first (biggest struggles at top)</p>
                 <div className="space-y-3">
                   {objections.map((obj, i) => (
                     <div key={i} className="flex items-center gap-4">
-                      <span className="text-gray-300 text-sm capitalize w-40 flex-shrink-0">
+                      <span className="text-gray-700 text-sm capitalize w-40 flex-shrink-0">
                         {obj.name}
                       </span>
-                      <div className="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
+                      <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
                             obj.avgHandling >= 7
@@ -361,11 +361,11 @@ export default async function UserProfilePage({ params }: Props) {
                         />
                       </div>
                       <span className={`text-sm font-semibold w-12 text-right ${
-                        obj.avgHandling >= 7 ? "text-green-400" : obj.avgHandling >= 4 ? "text-yellow-400" : "text-red-400"
+                        obj.avgHandling >= 7 ? "text-green-600" : obj.avgHandling >= 4 ? "text-yellow-600" : "text-red-500"
                       }`}>
                         {obj.avgHandling}/10
                       </span>
-                      <span className="text-gray-600 text-xs w-12">{obj.count}x raised</span>
+                      <span className="text-gray-400 text-xs w-12">{obj.count}x raised</span>
                     </div>
                   ))}
                 </div>
@@ -374,14 +374,14 @@ export default async function UserProfilePage({ params }: Props) {
 
             {/* Missed opportunities */}
             {missedOpps.length > 0 && (
-              <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-                <h2 className="font-semibold text-orange-400 mb-4">Recurring Missed Opportunities</h2>
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <h2 className="font-semibold text-orange-500 mb-4">Recurring Missed Opportunities</h2>
                 <ul className="space-y-2">
                   {missedOpps.map((mo, i) => (
-                    <li key={i} className="flex gap-2 text-sm text-gray-300">
+                    <li key={i} className="flex gap-2 text-sm text-gray-700">
                       <span className="text-orange-500 mt-0.5">•</span>
                       <span>{mo.description}</span>
-                      <span className="ml-auto text-xs text-gray-600 flex-shrink-0">
+                      <span className="ml-auto text-xs text-gray-400 flex-shrink-0">
                         {new Date(mo.session_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                       </span>
                     </li>
@@ -392,11 +392,11 @@ export default async function UserProfilePage({ params }: Props) {
 
             {/* Action items */}
             {actionItems.length > 0 && (
-              <div className="bg-blue-900/20 border border-blue-800/40 rounded-2xl p-6">
-                <h2 className="font-semibold text-blue-300 mb-4">Action Items for This Rep</h2>
+              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+                <h2 className="font-semibold text-blue-600 mb-4">Action Items for This Rep</h2>
                 <ul className="space-y-3">
                   {actionItems.map((item, i) => (
-                    <li key={i} className="flex gap-3 text-sm text-gray-300">
+                    <li key={i} className="flex gap-3 text-sm text-gray-700">
                       <span className="w-5 h-5 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mt-0.5">
                         {i + 1}
                       </span>
@@ -408,42 +408,42 @@ export default async function UserProfilePage({ params }: Props) {
             )}
 
             {/* Per-session list */}
-            <div className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
-              <div className="p-6 border-b border-gray-800">
-                <h2 className="font-semibold text-white">Session History</h2>
+            <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
+              <div className="p-6 border-b border-gray-200">
+                <h2 className="font-semibold text-gray-900">Session History</h2>
                 <p className="text-gray-500 text-xs mt-1">Only sessions longer than 1 minute</p>
               </div>
-              <div className="divide-y divide-gray-800">
+              <div className="divide-y divide-gray-200">
                 {sessions.map((s) => {
                   const r = s.report_json as CoachingReport | null;
                   const strength = r?.strengths?.[0] ?? null;
                   const weakness = r?.areas_to_improve?.[0] ?? null;
                   return (
-                    <div key={s.id} className="px-6 py-4 hover:bg-gray-800/30 transition-colors">
+                    <div key={s.id} className="px-6 py-4 hover:bg-gray-100 transition-colors">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-1">
-                            <span className="text-white text-sm font-medium">
+                            <span className="text-gray-900 text-sm font-medium">
                               {s.scenario_name ?? "Unknown Scenario"}
                             </span>
-                            <span className="text-gray-500 text-xs">
+                            <span className="text-gray-400 text-xs">
                               {new Date(s.started_at).toLocaleDateString("en-US", {
                                 month: "short",
                                 day: "numeric",
                                 year: "numeric",
                               })}
                             </span>
-                            <span className="text-gray-600 text-xs">
+                            <span className="text-gray-400 text-xs">
                               {formatDuration(s.duration_seconds)}
                             </span>
                           </div>
                           {strength && (
-                            <p className="text-xs text-green-400/80 mt-1">
+                            <p className="text-xs text-green-600 mt-1">
                               ✓ {strength}
                             </p>
                           )}
                           {weakness && (
-                            <p className="text-xs text-red-400/80 mt-0.5">
+                            <p className="text-xs text-red-500 mt-0.5">
                               ✗ {weakness}
                             </p>
                           )}
@@ -456,7 +456,7 @@ export default async function UserProfilePage({ params }: Props) {
                           )}
                           <Link
                             href={`/results/${s.id}`}
-                            className="text-blue-400 hover:text-blue-300 text-xs"
+                            className="text-blue-600 hover:text-blue-500 text-xs"
                           >
                             Report →
                           </Link>

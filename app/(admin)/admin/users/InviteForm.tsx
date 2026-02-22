@@ -33,21 +33,21 @@ export default function InviteForm() {
   };
 
   return (
-    <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-      <h2 className="font-semibold text-white mb-4">Send Invitation</h2>
+    <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+      <h2 className="font-semibold text-gray-900 mb-4">Send Invitation</h2>
       <form onSubmit={handleSubmit} className="flex gap-3">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="user@company.com"
-          className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 text-sm"
+          className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 text-sm"
           required
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 text-white rounded-xl text-sm font-medium transition-colors"
+          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-200 text-white rounded-xl text-sm font-medium transition-colors"
         >
           {status === "loading" ? "Sending..." : "Send Invite"}
         </button>

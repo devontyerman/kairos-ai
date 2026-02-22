@@ -35,20 +35,20 @@ export default function SessionsClient({ sessions }: Props) {
 
   const scoreColor = (score: number | null) => {
     if (score === null) return "text-gray-500";
-    if (score >= 80) return "text-green-400";
-    if (score >= 60) return "text-yellow-400";
-    return "text-red-400";
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-500";
   };
 
   return (
     <div className="space-y-4">
       {/* Filter bar */}
       <div className="flex items-center gap-3">
-        <label className="text-sm text-gray-400">Filter by user:</label>
+        <label className="text-sm text-gray-600">Filter by user:</label>
         <select
           value={filterEmail}
           onChange={(e) => setFilterEmail(e.target.value)}
-          className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500"
+          className="bg-gray-100 border border-gray-200 rounded-lg px-3 py-1.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
         >
           <option value="all">All users ({sessions.length})</option>
           {users.map((u) => (
@@ -61,7 +61,7 @@ export default function SessionsClient({ sessions }: Props) {
         {filterEmail !== "all" && (
           <Link
             href={`/admin/users/${filterEmail}`}
-            className="text-blue-400 hover:text-blue-300 text-sm"
+            className="text-blue-600 hover:text-blue-500 text-sm"
           >
             View profile →
           </Link>
@@ -69,11 +69,11 @@ export default function SessionsClient({ sessions }: Props) {
       </div>
 
       {/* Table */}
-      <div className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
+      <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-800 text-xs text-gray-500 uppercase tracking-wider">
+              <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
                 <th className="text-left px-6 py-3">User</th>
                 <th className="text-left px-6 py-3">Scenario</th>
                 <th className="text-left px-6 py-3">Started</th>
@@ -87,20 +87,20 @@ export default function SessionsClient({ sessions }: Props) {
               {filtered.map((s) => (
                 <tr
                   key={s.id}
-                  className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors"
+                  className="border-b border-gray-200 hover:bg-gray-100 transition-colors"
                 >
                   <td className="px-6 py-4">
                     <Link
                       href={`/admin/users/${s.clerk_user_id}`}
-                      className="text-sm text-white hover:text-blue-400 transition-colors"
+                      className="text-sm text-gray-900 hover:text-blue-600 transition-colors"
                     >
                       {s.display_name}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-300">
+                  <td className="px-6 py-4 text-sm text-gray-700">
                     {s.scenario_name ?? "—"}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-400">
+                  <td className="px-6 py-4 text-sm text-gray-600">
                     {new Date(s.started_at).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
@@ -108,7 +108,7 @@ export default function SessionsClient({ sessions }: Props) {
                       minute: "2-digit",
                     })}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-400">
+                  <td className="px-6 py-4 text-sm text-gray-600">
                     {s.ended_at
                       ? formatDuration(s.duration_seconds)
                       : "In progress"}
@@ -135,7 +135,7 @@ export default function SessionsClient({ sessions }: Props) {
                     {s.ended_at && (
                       <Link
                         href={`/results/${s.id}`}
-                        className="text-blue-400 hover:text-blue-300 text-xs"
+                        className="text-blue-600 hover:text-blue-500 text-xs"
                       >
                         View Report →
                       </Link>
