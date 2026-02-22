@@ -1,0 +1,50 @@
+import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
+import { listScenarios, createScenario } from "@/lib/db";
+
+export const runtime = "nodejs";
+
+export async function GET() {
+  try {
+    await requireAdmin();
+    const scenarios = await listScenarios();
+    return NextResponse.json(scenarios);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Server error";
+    const status =
+      message === "Unauthenticated"
+        ? 401
+        : message.includes("Forbidden")
+          ? 403
+          : 500;
+    return NextResponse.json({ error: message }, { status });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    await requireAdmin();
+    const body = await req.json();
+
+    const scenario = await createScenario({
+      name: body.name,
+      product_type: body.product_type ?? "generic",
+      difficulty: body.difficulty ?? "medium",
+      persona_style: body.persona_style ?? "neutral",
+      objection_pool: body.objection_pool ?? [],
+      rules: body.rules ?? {},
+      success_criteria: body.success_criteria ?? [],
+    });
+
+    return NextResponse.json(scenario, { status: 201 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Server error";
+    const status =
+      message === "Unauthenticated"
+        ? 401
+        : message.includes("Forbidden")
+          ? 403
+          : 500;
+    return NextResponse.json({ error: message }, { status });
+  }
+}
