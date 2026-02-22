@@ -34,6 +34,9 @@ export async function POST(req: NextRequest) {
       objection_pool: body.objection_pool ?? [],
       rules: body.rules ?? {},
       success_criteria: body.success_criteria ?? [],
+      client_description: body.client_description ?? "",
+      client_age: body.client_age ?? null,
+      voice: body.voice ?? "alloy",
     });
 
     return NextResponse.json(scenario, { status: 201 });
