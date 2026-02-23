@@ -28,12 +28,15 @@ export async function POST(req: NextRequest) {
 
     const scenario = await createScenario({
       name: body.name,
-      product_type: body.product_type ?? "generic",
+      product_type: body.product_type ?? "General Life Insurance",
       difficulty: body.difficulty ?? "medium",
       persona_style: body.persona_style ?? "neutral",
       objection_pool: body.objection_pool ?? [],
       rules: body.rules ?? {},
       success_criteria: body.success_criteria ?? [],
+      training_objective: body.training_objective ?? "objection-handling",
+      session_goal: body.session_goal ?? "close",
+      behavior_notes: body.behavior_notes ?? "",
       client_description: body.client_description ?? "",
       client_age: body.client_age ?? null,
       voice: body.voice ?? "alloy",
