@@ -105,10 +105,16 @@ Analyze this life insurance sales call and return a JSON coaching report. You MU
 
 The JSON must match this exact schema:
 {
-  "summary": "2-3 sentence overview of the call, mentioning whether the rep achieved the session goal",
+  "summary": "A 3-5 sentence paragraph covering: (1) the context of the call — who the rep was calling and why, (2) how the prospect responded overall, and (3) an overall impression of how the call went and whether the rep achieved the session goal. Be specific to THIS call, not generic.",
   "overall_score": <integer 0-100, weighted heavily toward performance on the training objective>,
-  "strengths": ["strength 1", "strength 2"],
-  "areas_to_improve": ["area 1", "area 2"],
+  "strengths": [
+    "Each strength MUST be 2-3 sentences. Quote the rep's exact words from the transcript that demonstrate the strength, then explain WHY it was effective. Example format: 'The rep did a great job of [skill] when they said \"[exact quote from transcript].\" This was effective because [reason].'",
+    "Return 2-4 strengths, each with a specific transcript quote and explanation"
+  ],
+  "areas_to_improve": [
+    "Each weakness MUST be 2-3 sentences. Quote the rep's exact words from the transcript, then explain what the risk or impact was. Example format: 'The rep [description of mistake] when they said \"[exact quote from transcript].\" This could [negative impact] because [reason].'",
+    "Return 2-4 areas to improve, each with a specific transcript quote and explanation"
+  ],
   "objections_detected": [
     {
       "objection": "objection type (e.g. price, spouse, need to think)",
