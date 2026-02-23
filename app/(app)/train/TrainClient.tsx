@@ -431,20 +431,12 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                     ? selectedScenario.objection_pool.join(", ")
                     : "—"}
                 </div>
-                <div className="mt-3">
-                  <span className="text-gray-500 block mb-1">
-                    Success criteria:
-                  </span>
-                  <ul className="space-y-1">
-                    {Array.isArray(selectedScenario.success_criteria) &&
-                      selectedScenario.success_criteria.map((c, i) => (
-                        <li key={i} className="flex gap-2">
-                          <span className="text-gray-400">•</span>
-                          <span>{c}</span>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
+                {selectedScenario.client_description?.trim() && (
+                  <div className="mt-1">
+                    <span className="text-gray-500">About:</span>{" "}
+                    {selectedScenario.client_description}
+                  </div>
+                )}
               </div>
             </div>
           )}
