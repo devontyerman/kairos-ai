@@ -421,22 +421,30 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                 Scenario Details
               </h3>
               <div className="space-y-2 text-gray-600">
+                {selectedScenario.client_description?.trim() && (
+                  <div>
+                    <span className="text-gray-500">Client:</span>{" "}
+                    {selectedScenario.client_description}
+                  </div>
+                )}
+                {selectedScenario.client_age != null && (
+                  <div>
+                    <span className="text-gray-500">Age:</span>{" "}
+                    {selectedScenario.client_age}
+                  </div>
+                )}
                 <div>
                   <span className="text-gray-500">Product:</span>{" "}
                   {selectedScenario.product_type}
                 </div>
                 <div>
-                  <span className="text-gray-500">Objections:</span>{" "}
-                  {Array.isArray(selectedScenario.objection_pool)
-                    ? selectedScenario.objection_pool.join(", ")
-                    : "—"}
+                  <span className="text-gray-500">Difficulty:</span>{" "}
+                  <span className="capitalize">{selectedScenario.difficulty}</span>
                 </div>
-                {selectedScenario.client_description?.trim() && (
-                  <div className="mt-1">
-                    <span className="text-gray-500">About:</span>{" "}
-                    {selectedScenario.client_description}
-                  </div>
-                )}
+                <div>
+                  <span className="text-gray-500">Objective:</span>{" "}
+                  <span className="capitalize">{selectedScenario.training_objective.replace(/-/g, " ")}</span>
+                </div>
               </div>
             </div>
           )}
