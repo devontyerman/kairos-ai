@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
-import { getScenario } from "@/lib/db";
+import { getScenario, getGlobalSettings } from "@/lib/db";
 import { buildProspectSystemPrompt } from "@/lib/scenario-prompt";
 
 export const runtime = "nodejs";
@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const systemPrompt = buildProspectSystemPrompt(scenario);
+    const globalSettings = await getGlobalSettings();
+    const systemPrompt = buildProspectSystemPrompt(scenario, globalSettings);
 
     const openaiKey = process.env.OPENAI_API_KEY;
     if (!openaiKey) throw new Error("OPENAI_API_KEY is not set");

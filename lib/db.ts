@@ -377,3 +377,33 @@ export async function getReport(sessionId: string): Promise<Report | null> {
   const rows = await sql`SELECT * FROM reports WHERE session_id = ${sessionId}`;
   return (rows[0] as Report) ?? null;
 }
+
+// ─── Global Settings helpers ─────────────────────────────────────────────────
+
+export interface GlobalSettings {
+  id: number;
+  master_prospect_behavior: string;
+  master_conversation_style: string;
+  master_coaching_notes: string;
+  updated_at: string;
+}
+
+export async function getGlobalSettings(): Promise<GlobalSettings> {
+  const rows = await sql`SELECT * FROM global_settings WHERE id = 1`;
+  return rows[0] as GlobalSettings;
+}
+
+export async function updateGlobalSettings(
+  patch: Partial<Pick<GlobalSettings, "master_prospect_behavior" | "master_conversation_style" | "master_coaching_notes">>
+): Promise<GlobalSettings> {
+  const rows = await sql`
+    UPDATE global_settings SET
+      master_prospect_behavior = COALESCE(${patch.master_prospect_behavior ?? null}, master_prospect_behavior),
+      master_conversation_style = COALESCE(${patch.master_conversation_style ?? null}, master_conversation_style),
+      master_coaching_notes = COALESCE(${patch.master_coaching_notes ?? null}, master_coaching_notes),
+      updated_at = NOW()
+    WHERE id = 1
+    RETURNING *
+  `;
+  return rows[0] as GlobalSettings;
+}

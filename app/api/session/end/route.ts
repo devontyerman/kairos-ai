@@ -4,6 +4,7 @@ import {
   endSession,
   getSession,
   getScenario,
+  getGlobalSettings,
   insertTurns,
   saveReport,
   CoachingReport,
@@ -57,7 +58,8 @@ export async function POST(req: NextRequest) {
       ? await getScenario(session.scenario_id)
       : null;
 
-    const report = await generateCoachingReport(transcript ?? [], scenario);
+    const globalSettings = await getGlobalSettings();
+    const report = await generateCoachingReport(transcript ?? [], scenario, globalSettings);
     await saveReport(sessionId, report.overall_score, report);
 
     return NextResponse.json({ sessionId, report });
@@ -70,7 +72,8 @@ export async function POST(req: NextRequest) {
 
 async function generateCoachingReport(
   transcript: TranscriptTurn[],
-  scenario: Awaited<ReturnType<typeof getScenario>>
+  scenario: Awaited<ReturnType<typeof getScenario>>,
+  globalSettings?: { master_coaching_notes?: string }
 ): Promise<CoachingReport> {
   const openaiKey = process.env.OPENAI_API_KEY;
   if (!openaiKey) throw new Error("OPENAI_API_KEY is not set");
@@ -97,7 +100,7 @@ ${goalContext}
 TRAINING OBJECTIVE — WEIGHT SCORING HERE:
 The primary skill being trained this session is: "${objectiveLabel}"
 When scoring this call, give significantly higher weight to how well the rep performed in this specific area. Strengths, areas to improve, missed opportunities, and drills should all be oriented toward this objective where relevant.
-
+${globalSettings?.master_coaching_notes?.trim() ? `\nADDITIONAL COACHING INSTRUCTIONS (apply to every session report):\n${globalSettings.master_coaching_notes.trim()}\n` : ""}
 TRANSCRIPT:
 ${transcriptText || "(No transcript recorded)"}
 

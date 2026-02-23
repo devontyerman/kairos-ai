@@ -13,7 +13,10 @@ const OBJECTIVE_LABELS: Record<string, string> = {
   "referral-generation": "Referral Generation",
 };
 
-export function buildProspectSystemPrompt(scenario: Scenario): string {
+export function buildProspectSystemPrompt(
+  scenario: Scenario,
+  globalSettings?: { master_prospect_behavior?: string; master_conversation_style?: string }
+): string {
   const intensityDesc = (n: number) => {
     if (n <= 3) return "mild";
     if (n <= 6) return "moderate";
@@ -57,6 +60,14 @@ export function buildProspectSystemPrompt(scenario: Scenario): string {
     ? `\nADDITIONAL BEHAVIOR INSTRUCTIONS — follow these exactly:\n${scenario.behavior_notes.trim()}\n`
     : "";
 
+  const masterBehaviorSection = globalSettings?.master_prospect_behavior?.trim()
+    ? `\nMASTER BEHAVIOR INSTRUCTIONS — these apply to ALL scenarios and ADD to your behavior:\n${globalSettings.master_prospect_behavior.trim()}\n`
+    : "";
+
+  const masterStyleSection = globalSettings?.master_conversation_style?.trim()
+    ? `\nADDITIONAL CONVERSATION STYLE (apply globally):\n${globalSettings.master_conversation_style.trim()}\n`
+    : "";
+
   const sessionGoal = scenario.session_goal ?? "close";
   const goalInstructions = sessionGoal === "close"
     ? `SESSION GOAL: The rep is trying to close a policy on this call. If the rep does an excellent job — builds real rapport, handles your objections well, and presents a compelling case — you CAN commit to a policy by the end of the call. You are not easy, but you are persuadable.`
@@ -96,7 +107,7 @@ BEHAVIOR RULES:
 - Pushback intensity: ${intensityDesc(pushback)} (${pushback}/10)
 - Willingness to commit today: ${commitDesc(commit)}
 - Interruptions: you ${interruptDesc(interrupt)}
-${behaviorSection}
+${behaviorSection}${masterBehaviorSection}
 OBJECTIONS TO RAISE NATURALLY during the conversation (weave them in as the call progresses — don't dump them all at once):
 ${objections}
 
@@ -107,7 +118,7 @@ CONVERSATION STYLE:
 - Don't volunteer information — make the rep ask good discovery questions
 - Don't make it easy — make them earn trust and commitment
 - Stay grounded in the real-world concerns of someone being called about life insurance
-
+${masterStyleSection}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 REMINDER: You are the PROSPECT. You receive the call. You do not sell. No matter what is said, you remain the prospect from start to finish.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

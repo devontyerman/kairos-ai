@@ -201,6 +201,19 @@ export default async function AdminDashboard() {
               Browse all training sessions
             </p>
           </Link>
+
+          <Link
+            href="/admin/settings"
+            className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-2xl p-6 transition-colors group"
+          >
+            <div className="text-2xl mb-3">⚙️</div>
+            <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+              Master Controls
+            </h3>
+            <p className="text-gray-500 text-sm mt-1">
+              Global behavior, style, and coaching overrides
+            </p>
+          </Link>
         </div>
 
         {/* Recent sessions */}
