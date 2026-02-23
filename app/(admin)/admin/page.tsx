@@ -75,7 +75,7 @@ export default async function AdminDashboard() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: "Total Users", value: users.length, color: "blue" },
+            { label: "Total Users", value: users.length, color: "blue", href: "/admin/users" },
             {
               label: "Active Users",
               value: users.filter((u) => !u.is_disabled).length,
@@ -91,19 +91,34 @@ export default async function AdminDashboard() {
               value: sessions.length,
               color: "orange",
             },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-gray-50 rounded-2xl border border-gray-200 p-5"
-            >
-              <div
-                className={`text-3xl font-bold text-${stat.color}-500 mb-1`}
+          ].map((stat) => {
+            const inner = (
+              <>
+                <div
+                  className={`text-3xl font-bold text-${stat.color}-500 mb-1`}
+                >
+                  {stat.value}
+                </div>
+                <div className="text-gray-500 text-sm">{stat.label}</div>
+              </>
+            );
+            return "href" in stat && stat.href ? (
+              <Link
+                key={stat.label}
+                href={stat.href}
+                className="bg-gray-50 rounded-2xl border border-gray-200 p-5 hover:bg-gray-100 transition-colors"
               >
-                {stat.value}
+                {inner}
+              </Link>
+            ) : (
+              <div
+                key={stat.label}
+                className="bg-gray-50 rounded-2xl border border-gray-200 p-5"
+              >
+                {inner}
               </div>
-              <div className="text-gray-500 text-sm">{stat.label}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Estimated OpenAI Costs */}

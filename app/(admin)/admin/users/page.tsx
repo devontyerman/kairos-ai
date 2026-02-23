@@ -1,11 +1,16 @@
 export const dynamic = "force-dynamic";
 
 import { requireAdmin } from "@/lib/auth";
-import { listUsers } from "@/lib/db";
+import {
+  listUsers,
+  listSessionsWithDetails,
+  getDisplayName,
+} from "@/lib/db";
 import { redirect } from "next/navigation";
 import AppNav from "@/components/AppNav";
 import InviteForm from "./InviteForm";
 import UserTable from "./UserTable";
+import ActivityRanking from "./ActivityRanking";
 
 export default async function AdminUsersPage() {
   let admin;
@@ -15,7 +20,31 @@ export default async function AdminUsersPage() {
     redirect("/train");
   }
 
-  const users = await listUsers();
+  const [users, sessions] = await Promise.all([
+    listUsers(),
+    listSessionsWithDetails(),
+  ]);
+
+  // Build per-user activity data for the ranking component
+  const activityData = users.map((u) => {
+    const userSessions = sessions.filter(
+      (s) =>
+        s.clerk_user_id === u.clerk_user_id &&
+        s.ended_at &&
+        s.duration_seconds &&
+        s.duration_seconds > 60
+    );
+    return {
+      clerk_user_id: u.clerk_user_id,
+      display_name: getDisplayName(u),
+      email: u.email,
+      sessions: userSessions.map((s) => ({
+        started_at: s.started_at,
+        duration_seconds: s.duration_seconds ?? 0,
+        overall_score: s.overall_score,
+      })),
+    };
+  });
 
   return (
     <div className="min-h-screen bg-white">
@@ -29,6 +58,7 @@ export default async function AdminUsersPage() {
           </p>
         </div>
 
+        <ActivityRanking data={activityData} />
         <InviteForm />
         <UserTable users={users} />
       </div>
