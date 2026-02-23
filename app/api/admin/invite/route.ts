@@ -15,6 +15,22 @@ export async function POST(req: NextRequest) {
     const clerkSecret = process.env.CLERK_SECRET_KEY;
     if (!clerkSecret) throw new Error("CLERK_SECRET_KEY is not set");
 
+    // Build the absolute redirect URL for the invitation link.
+    // NEXT_PUBLIC_APP_URL must be set in Vercel env vars (e.g. https://kairos-ai.vercel.app).
+    // Fall back to VERCEL_URL (auto-set by Vercel, no protocol prefix) if not set.
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ??
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null);
+
+    if (!appUrl) {
+      return NextResponse.json(
+        { error: "NEXT_PUBLIC_APP_URL is not configured. Add it to your Vercel environment variables." },
+        { status: 500 }
+      );
+    }
+
+    const redirectUrl = `${appUrl}/sign-up`;
+
     // Use Clerk Backend API to create an invitation
     const response = await fetch("https://api.clerk.com/v1/invitations", {
       method: "POST",
@@ -24,7 +40,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         email_address: email,
-        redirect_url: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/sign-up`,
+        redirect_url: redirectUrl,
         notify: true,
         ignore_existing: false,
       }),
