@@ -46,6 +46,7 @@ export interface Scenario {
   client_age: number | null;
   voice: string;
   sales_script: string;
+  scenario_description: string;
   created_at: string;
   updated_at: string;
 }
@@ -174,7 +175,7 @@ export async function createScenario(
     INSERT INTO scenarios (
       name, product_type, difficulty, persona_style, objection_pool, rules,
       success_criteria, training_objective, session_goal, behavior_notes,
-      client_description, client_age, voice, sales_script
+      client_description, client_age, voice, sales_script, scenario_description
     )
     VALUES (
       ${data.name},
@@ -190,7 +191,8 @@ export async function createScenario(
       ${data.client_description ?? ""},
       ${data.client_age ?? null},
       ${data.voice ?? "alloy"},
-      ${data.sales_script ?? ""}
+      ${data.sales_script ?? ""},
+      ${data.scenario_description ?? ""}
     )
     RETURNING *
   `;
@@ -217,6 +219,7 @@ export async function updateScenario(
       client_age         = ${data.client_age !== undefined ? data.client_age : null},
       voice              = COALESCE(${data.voice ?? null}, voice),
       sales_script       = ${data.sales_script ?? null},
+      scenario_description = COALESCE(${data.scenario_description ?? null}, scenario_description),
       updated_at         = NOW()
     WHERE id = ${id}
     RETURNING *

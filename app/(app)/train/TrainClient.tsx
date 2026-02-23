@@ -421,18 +421,14 @@ export default function TrainClient({ scenarios, userRole }: Props) {
                 Scenario Details
               </h3>
               <div className="space-y-2 text-gray-600">
-                {selectedScenario.client_description?.trim() && (
-                  <div>
-                    <span className="text-gray-500">Client:</span>{" "}
-                    {selectedScenario.client_description}
-                  </div>
+                {selectedScenario.scenario_description?.trim() && (
+                  <p className="text-gray-600 mb-2">{selectedScenario.scenario_description}</p>
                 )}
-                {selectedScenario.client_age != null && (
-                  <div>
-                    <span className="text-gray-500">Age:</span>{" "}
-                    {selectedScenario.client_age}
-                  </div>
-                )}
+                <div>
+                  <span className="text-gray-500">Client:</span>{" "}
+                  {selectedScenario.name}
+                  {selectedScenario.client_age != null && `, Age ${selectedScenario.client_age}`}
+                </div>
                 <div>
                   <span className="text-gray-500">Product:</span>{" "}
                   {selectedScenario.product_type}

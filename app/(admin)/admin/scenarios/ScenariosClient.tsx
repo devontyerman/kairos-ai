@@ -24,6 +24,7 @@ type FormData = {
   client_age: string;
   voice: string;
   sales_script: string;
+  scenario_description: string;
 };
 
 const VOICE_OPTIONS = [
@@ -112,6 +113,7 @@ const defaultForm: FormData = {
   client_age: "",
   voice: "alloy",
   sales_script: "",
+  scenario_description: "",
 };
 
 export default function ScenariosClient({ initialScenarios }: Props) {
@@ -147,6 +149,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
       client_age: s.client_age != null ? String(s.client_age) : "",
       voice: s.voice ?? "alloy",
       sales_script: s.sales_script ?? "",
+      scenario_description: s.scenario_description ?? "",
     });
     setEditingId(s.id);
     setFormError(null);
@@ -188,6 +191,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
       client_age: form.client_age ? parseInt(form.client_age, 10) : null,
       voice: form.voice,
       sales_script: form.sales_script.trim(),
+      scenario_description: form.scenario_description.trim(),
     };
 
     const url = editingId
@@ -277,6 +281,19 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                     onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                     placeholder="Budget-Conscious Bob"
                     className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-xs text-gray-600 mb-1">
+                    Scenario Description <span className="text-gray-400">(shown to reps on the training page)</span>
+                  </label>
+                  <textarea
+                    value={form.scenario_description}
+                    onChange={(e) => setForm((f) => ({ ...f, scenario_description: e.target.value }))}
+                    rows={2}
+                    placeholder="e.g. Practice handling budget objections with a price-sensitive prospect who needs convincing on value."
+                    className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-y"
                   />
                 </div>
 
