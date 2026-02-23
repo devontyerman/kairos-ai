@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Scenario } from "@/lib/db";
+import { LIFE_INSURANCE_OBJECTIONS } from "@/lib/objections";
 
 interface Props {
   initialScenarios: Scenario[];
@@ -22,6 +23,7 @@ type FormData = {
   client_description: string;
   client_age: string;
   voice: string;
+  sales_script: string;
 };
 
 const VOICE_OPTIONS = [
@@ -40,23 +42,6 @@ const PRODUCT_TYPES = [
   "General Life Insurance",
 ];
 
-const LIFE_INSURANCE_OBJECTIONS = [
-  "Too expensive — can't afford the premiums",
-  "Need to think about it more",
-  "Need to talk to my spouse first",
-  "Too young — don't need it yet",
-  "Already have coverage through work",
-  "I'm healthy, I don't think I need it",
-  "Don't trust insurance companies",
-  "Don't want to think about death",
-  "It's too complicated to understand",
-  "I'll get around to it later",
-  "My family told me not to bother",
-  "I already have savings — I'm self-insured",
-  "Worried the company won't actually pay out",
-  "Had a bad experience with insurance before",
-  "I don't believe my family would really need it",
-];
 
 const TRAINING_OBJECTIVES = [
   {
@@ -126,6 +111,7 @@ const defaultForm: FormData = {
   client_description: "",
   client_age: "",
   voice: "alloy",
+  sales_script: "",
 };
 
 export default function ScenariosClient({ initialScenarios }: Props) {
@@ -160,6 +146,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
       client_description: s.client_description ?? "",
       client_age: s.client_age != null ? String(s.client_age) : "",
       voice: s.voice ?? "alloy",
+      sales_script: s.sales_script ?? "",
     });
     setEditingId(s.id);
     setFormError(null);
@@ -200,6 +187,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
       client_description: form.client_description.trim(),
       client_age: form.client_age ? parseInt(form.client_age, 10) : null,
       voice: form.voice,
+      sales_script: form.sales_script.trim(),
     };
 
     const url = editingId
@@ -370,6 +358,27 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* ── Sales Script ── */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Sales Script</p>
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">
+                  Talk Track / Script{" "}
+                  <span className="text-gray-400">(optional)</span>
+                </label>
+                <textarea
+                  value={form.sales_script}
+                  onChange={(e) => setForm((f) => ({ ...f, sales_script: e.target.value }))}
+                  rows={8}
+                  placeholder={"e.g. \"Hi [Name], this is [Rep] calling from [Company]. I'm following up on the form you filled out about life insurance...\n\nStep 1: Build rapport — ask about their day, family situation\nStep 2: Discovery — ask what prompted them to look into coverage\nStep 3: Present options based on their needs\nStep 4: Handle objections using feel-felt-found\nStep 5: Trial close — 'Based on everything we've discussed...'\""}
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-y"
+                />
+                <p className="text-gray-400 text-xs mt-1">
+                  Paste the talk track your reps should follow. The AI will score how closely they adhere to this flow and reference it in coaching feedback.
+                </p>
+              </div>
             </div>
 
             {/* ── Persona ── */}

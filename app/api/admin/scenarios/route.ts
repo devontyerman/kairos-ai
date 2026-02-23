@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
       client_description: body.client_description ?? "",
       client_age: body.client_age ?? null,
       voice: body.voice ?? "alloy",
+      sales_script: body.sales_script ?? "",
     });
 
     return NextResponse.json(scenario, { status: 201 });

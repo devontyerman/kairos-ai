@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { GlobalSettings } from "@/lib/db";
+import { LIFE_INSURANCE_OBJECTIONS } from "@/lib/objections";
 
 interface Props {
   initialSettings: GlobalSettings;
@@ -13,6 +14,9 @@ export default function SettingsClient({ initialSettings }: Props) {
     master_conversation_style: initialSettings.master_conversation_style,
     master_coaching_notes: initialSettings.master_coaching_notes,
   });
+  const [objectionResponses, setObjectionResponses] = useState<Record<string, string>>(
+    initialSettings.master_objection_responses ?? {}
+  );
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -33,7 +37,10 @@ export default function SettingsClient({ initialSettings }: Props) {
       const res = await fetch("/api/admin/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          master_objection_responses: objectionResponses,
+        }),
       });
 
       if (res.ok) {
@@ -43,6 +50,7 @@ export default function SettingsClient({ initialSettings }: Props) {
           master_conversation_style: updated.master_conversation_style,
           master_coaching_notes: updated.master_coaching_notes,
         });
+        setObjectionResponses(updated.master_objection_responses ?? {});
         setSaved(true);
       } else {
         const err = await res.json().catch(() => ({ error: "Save failed" }));
@@ -104,6 +112,37 @@ export default function SettingsClient({ initialSettings }: Props) {
           />
         </div>
       ))}
+
+      {/* Objection Response Guide */}
+      <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+        <label className="block text-sm font-semibold text-gray-900 mb-1">
+          Objection Response Guide
+        </label>
+        <p className="text-xs text-gray-500 mb-4">
+          Type your suggested responses for each objection. The coaching feedback will reference these when advising reps on how to handle objections.
+        </p>
+        <div className="space-y-4">
+          {LIFE_INSURANCE_OBJECTIONS.map((objection) => (
+            <div key={objection}>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                {objection}
+              </label>
+              <textarea
+                value={objectionResponses[objection] ?? ""}
+                onChange={(e) =>
+                  setObjectionResponses((prev) => ({
+                    ...prev,
+                    [objection]: e.target.value,
+                  }))
+                }
+                rows={2}
+                placeholder="Type your suggested response for this objection..."
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-y"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
 
       {formError && (
         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm">

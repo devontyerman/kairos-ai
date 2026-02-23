@@ -150,6 +150,45 @@ export default async function ResultsPage({ params }: Props) {
               </div>
             )}
 
+            {/* Script Adherence */}
+            {r?.script_adherence_score != null && (
+              <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6 flex items-start gap-6">
+                <div className="flex flex-col items-center flex-shrink-0">
+                  <div className="relative w-16 h-16">
+                    <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+                      <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" strokeWidth="3" />
+                      <circle
+                        cx="18" cy="18" r="15.9" fill="none" strokeWidth="3"
+                        strokeDasharray={`${r.script_adherence_score} ${100 - r.script_adherence_score}`}
+                        strokeLinecap="round"
+                        className={
+                          r.script_adherence_score >= 80 ? "stroke-green-500"
+                            : r.script_adherence_score >= 60 ? "stroke-yellow-500"
+                              : "stroke-red-500"
+                        }
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className={`text-lg font-bold ${
+                        r.script_adherence_score >= 80 ? "text-green-400"
+                          : r.script_adherence_score >= 60 ? "text-yellow-400"
+                            : "text-red-400"
+                      }`}>
+                        {r.script_adherence_score}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-gray-400 text-xs mt-1">Script</span>
+                </div>
+                <div>
+                  <h2 className="font-semibold text-gray-900 mb-1">Script Adherence</h2>
+                  {r.script_adherence_notes && (
+                    <p className="text-gray-700 text-sm leading-relaxed">{r.script_adherence_notes}</p>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Strengths + Areas to Improve */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">

@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
 async function generateCoachingReport(
   transcript: TranscriptTurn[],
   scenario: Awaited<ReturnType<typeof getScenario>>,
-  globalSettings?: { master_coaching_notes?: string }
+  globalSettings?: { master_coaching_notes?: string; master_objection_responses?: Record<string, string> }
 ): Promise<CoachingReport> {
   const openaiKey = process.env.OPENAI_API_KEY;
   if (!openaiKey) throw new Error("OPENAI_API_KEY is not set");
@@ -100,7 +100,24 @@ ${goalContext}
 TRAINING OBJECTIVE — WEIGHT SCORING HERE:
 The primary skill being trained this session is: "${objectiveLabel}"
 When scoring this call, give significantly higher weight to how well the rep performed in this specific area. Strengths, areas to improve, missed opportunities, and drills should all be oriented toward this objective where relevant.
-${globalSettings?.master_coaching_notes?.trim() ? `\nADDITIONAL COACHING INSTRUCTIONS (apply to every session report):\n${globalSettings.master_coaching_notes.trim()}\n` : ""}
+${globalSettings?.master_coaching_notes?.trim() ? `\nADDITIONAL COACHING INSTRUCTIONS (apply to every session report):\n${globalSettings.master_coaching_notes.trim()}\n` : ""}${scenario?.sales_script?.trim() ? `
+SALES SCRIPT — EVALUATE ADHERENCE:
+The following is the approved sales script/talk track for this scenario. Score how closely the rep followed this general flow, key questions, and word tracks. They do NOT need to follow it word-for-word, but should hit the main points, use similar language, and follow the general structure.
+
+${scenario.sales_script.trim()}
+
+Include "script_adherence_score" (0-100) and "script_adherence_notes" (2-3 sentences explaining what they followed well and what they missed or skipped from the script). Also reference the script in strengths, areas_to_improve, and drills where relevant — note when the rep used good word tracks from the script and when they deviated.
+` : ""}${(() => {
+    const responses = globalSettings?.master_objection_responses ?? {};
+    const entries = Object.entries(responses).filter(([, v]) => v.trim());
+    if (entries.length === 0) return "";
+    return `
+APPROVED OBJECTION RESPONSES — USE THESE IN FEEDBACK:
+When the rep encounters these objections, evaluate whether they used language similar to the approved responses below. Reference these in your feedback, drills, and example_scripts. If the rep handled an objection poorly, show them the suggested response.
+
+${entries.map(([obj, resp]) => `Objection: "${obj}"\nSuggested Response: "${resp}"`).join("\n\n")}
+`;
+  })()}
 TRANSCRIPT:
 ${transcriptText || "(No transcript recorded)"}
 
@@ -147,6 +164,9 @@ The JSON must match this exact schema:
   - Each drill MUST include an example_script with a word-for-word alternative the rep should practice
   - Do NOT give generic advice like "practice active listening" — instead say exactly WHAT to say and WHEN
   - Tie each drill to a specific weakness you identified, not to general sales theory
+  - If approved objection responses were provided above, use them as the basis for example_scripts when relevant
+  ${scenario?.sales_script?.trim() ? `"script_adherence_score": <integer 0-100, how closely the rep followed the approved sales script>,
+  "script_adherence_notes": "2-3 sentences explaining what parts of the script the rep followed well, what they skipped or missed, and whether they hit the key word tracks and questions",` : ""}
   "next_session_plan": "Concrete focus areas and goals for the next training session, tied to the training objective"
 }`;
 

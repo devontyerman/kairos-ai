@@ -1,0 +1,17 @@
+export const LIFE_INSURANCE_OBJECTIONS = [
+  "Too expensive — can't afford the premiums",
+  "Need to think about it more",
+  "Need to talk to my spouse first",
+  "Too young — don't need it yet",
+  "Already have coverage through work",
+  "I'm healthy, I don't think I need it",
+  "Don't trust insurance companies",
+  "Don't want to think about death",
+  "It's too complicated to understand",
+  "I'll get around to it later",
+  "My family told me not to bother",
+  "I already have savings — I'm self-insured",
+  "Worried the company won't actually pay out",
+  "Had a bad experience with insurance before",
+  "I don't believe my family would really need it",
+];

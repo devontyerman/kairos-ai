@@ -24,6 +24,7 @@ export async function PATCH(req: NextRequest) {
       master_prospect_behavior: body.master_prospect_behavior,
       master_conversation_style: body.master_conversation_style,
       master_coaching_notes: body.master_coaching_notes,
+      master_objection_responses: body.master_objection_responses,
     });
     return NextResponse.json(updated);
   } catch (err) {

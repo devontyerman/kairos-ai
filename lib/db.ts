@@ -45,6 +45,7 @@ export interface Scenario {
   client_description: string;
   client_age: number | null;
   voice: string;
+  sales_script: string;
   created_at: string;
   updated_at: string;
 }
@@ -93,6 +94,8 @@ export interface CoachingReport {
     goal: string;
     example_script?: string;
   }>;
+  script_adherence_score?: number;
+  script_adherence_notes?: string;
   next_session_plan: string;
 }
 
@@ -171,7 +174,7 @@ export async function createScenario(
     INSERT INTO scenarios (
       name, product_type, difficulty, persona_style, objection_pool, rules,
       success_criteria, training_objective, session_goal, behavior_notes,
-      client_description, client_age, voice
+      client_description, client_age, voice, sales_script
     )
     VALUES (
       ${data.name},
@@ -186,7 +189,8 @@ export async function createScenario(
       ${data.behavior_notes ?? ""},
       ${data.client_description ?? ""},
       ${data.client_age ?? null},
-      ${data.voice ?? "alloy"}
+      ${data.voice ?? "alloy"},
+      ${data.sales_script ?? ""}
     )
     RETURNING *
   `;
@@ -212,6 +216,7 @@ export async function updateScenario(
       client_description = ${data.client_description ?? null},
       client_age         = ${data.client_age !== undefined ? data.client_age : null},
       voice              = COALESCE(${data.voice ?? null}, voice),
+      sales_script       = ${data.sales_script ?? null},
       updated_at         = NOW()
     WHERE id = ${id}
     RETURNING *
@@ -385,6 +390,7 @@ export interface GlobalSettings {
   master_prospect_behavior: string;
   master_conversation_style: string;
   master_coaching_notes: string;
+  master_objection_responses: Record<string, string>;
   updated_at: string;
 }
 
@@ -394,13 +400,14 @@ export async function getGlobalSettings(): Promise<GlobalSettings> {
 }
 
 export async function updateGlobalSettings(
-  patch: Partial<Pick<GlobalSettings, "master_prospect_behavior" | "master_conversation_style" | "master_coaching_notes">>
+  patch: Partial<Pick<GlobalSettings, "master_prospect_behavior" | "master_conversation_style" | "master_coaching_notes" | "master_objection_responses">>
 ): Promise<GlobalSettings> {
   const rows = await sql`
     UPDATE global_settings SET
       master_prospect_behavior = COALESCE(${patch.master_prospect_behavior ?? null}, master_prospect_behavior),
       master_conversation_style = COALESCE(${patch.master_conversation_style ?? null}, master_conversation_style),
       master_coaching_notes = COALESCE(${patch.master_coaching_notes ?? null}, master_coaching_notes),
+      master_objection_responses = COALESCE(${patch.master_objection_responses ? JSON.stringify(patch.master_objection_responses) : null}::jsonb, master_objection_responses),
       updated_at = NOW()
     WHERE id = 1
     RETURNING *
