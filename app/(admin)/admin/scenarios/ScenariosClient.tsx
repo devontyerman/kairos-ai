@@ -12,7 +12,7 @@ type FormData = {
   product_type: string;
   difficulty: "easy" | "medium" | "hard";
   persona_style: "friendly" | "neutral" | "skeptical" | "combative";
-  objection_pool: string; // comma-separated
+  objection_pool: string[];
   pushback_intensity: number;
   willingness_to_commit: number;
   interrupt_frequency: number;
@@ -31,12 +31,30 @@ const VOICE_OPTIONS = [
   { value: "sage", label: "Sage (Female)" },
 ];
 
+const LIFE_INSURANCE_OBJECTIONS = [
+  "Too expensive — can't afford the premiums",
+  "Need to think about it more",
+  "Need to talk to my spouse first",
+  "Too young — don't need it yet",
+  "Already have coverage through work",
+  "I'm healthy, I don't think I need it",
+  "Don't trust insurance companies",
+  "Don't want to think about death",
+  "It's too complicated to understand",
+  "I'll get around to it later",
+  "My family told me not to bother",
+  "I already have savings — I'm self-insured",
+  "Worried the company won't actually pay out",
+  "Had a bad experience with insurance before",
+  "I don't believe my family would really need it",
+];
+
 const defaultForm: FormData = {
   name: "",
   product_type: "",
   difficulty: "medium",
   persona_style: "neutral",
-  objection_pool: "price, trust, need-to-think",
+  objection_pool: [],
   pushback_intensity: 5,
   willingness_to_commit: 5,
   interrupt_frequency: 2,
@@ -52,11 +70,13 @@ export default function ScenariosClient({ initialScenarios }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormData>(defaultForm);
   const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
 
   const openCreate = () => {
     setForm(defaultForm);
     setEditingId(null);
+    setFormError(null);
     setShowForm(true);
   };
 
@@ -66,9 +86,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
       product_type: s.product_type,
       difficulty: s.difficulty,
       persona_style: s.persona_style,
-      objection_pool: Array.isArray(s.objection_pool)
-        ? s.objection_pool.join(", ")
-        : "",
+      objection_pool: Array.isArray(s.objection_pool) ? s.objection_pool : [],
       pushback_intensity: s.rules.pushback_intensity ?? 5,
       willingness_to_commit: s.rules.willingness_to_commit ?? 5,
       interrupt_frequency: s.rules.interrupt_frequency ?? 2,
@@ -80,20 +98,32 @@ export default function ScenariosClient({ initialScenarios }: Props) {
       voice: s.voice ?? "alloy",
     });
     setEditingId(s.id);
+    setFormError(null);
     setShowForm(true);
   };
 
+  const toggleObjection = (obj: string) => {
+    setForm((f) => {
+      const already = f.objection_pool.includes(obj);
+      return {
+        ...f,
+        objection_pool: already
+          ? f.objection_pool.filter((o) => o !== obj)
+          : [...f.objection_pool, obj],
+      };
+    });
+  };
+
   const handleSave = async () => {
+    setFormError(null);
     setSaving(true);
+
     const payload = {
       name: form.name,
       product_type: form.product_type,
       difficulty: form.difficulty,
       persona_style: form.persona_style,
-      objection_pool: form.objection_pool
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
+      objection_pool: form.objection_pool,
       rules: {
         pushback_intensity: form.pushback_intensity,
         willingness_to_commit: form.willingness_to_commit,
@@ -113,24 +143,32 @@ export default function ScenariosClient({ initialScenarios }: Props) {
       : "/api/admin/scenarios";
     const method = editingId ? "PATCH" : "POST";
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    if (res.ok) {
-      const saved = await res.json();
-      if (editingId) {
-        setScenarios((prev) =>
-          prev.map((s) => (s.id === editingId ? saved : s))
-        );
+      if (res.ok) {
+        const saved = await res.json();
+        if (editingId) {
+          setScenarios((prev) =>
+            prev.map((s) => (s.id === editingId ? saved : s))
+          );
+        } else {
+          setScenarios((prev) => [...prev, saved]);
+        }
+        setShowForm(false);
+        setEditingId(null);
       } else {
-        setScenarios((prev) => [...prev, saved]);
+        const err = await res.json().catch(() => ({ error: "Save failed" }));
+        setFormError(err.error ?? `Save failed (${res.status})`);
       }
-      setShowForm(false);
-      setEditingId(null);
+    } catch {
+      setFormError("Network error — could not save scenario");
     }
+
     setSaving(false);
   };
 
@@ -203,7 +241,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, product_type: e.target.value }))
                   }
-                  placeholder="SaaS Software"
+                  placeholder="Term Life Insurance"
                   className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
@@ -254,20 +292,34 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                 </div>
               </div>
 
+              {/* Objection Pool — multi-select chips */}
               <div className="col-span-2">
-                <label className="block text-xs text-gray-600 mb-1">
+                <label className="block text-xs text-gray-600 mb-2">
                   Objection Pool{" "}
-                  <span className="text-gray-400">(comma-separated)</span>
+                  <span className="text-gray-400">
+                    — select all that apply ({form.objection_pool.length} selected)
+                  </span>
                 </label>
-                <input
-                  type="text"
-                  value={form.objection_pool}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, objection_pool: e.target.value }))
-                  }
-                  placeholder="price, trust, need-to-think, spouse"
-                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
-                />
+                <div className="flex flex-wrap gap-2">
+                  {LIFE_INSURANCE_OBJECTIONS.map((obj) => {
+                    const selected = form.objection_pool.includes(obj);
+                    return (
+                      <button
+                        key={obj}
+                        type="button"
+                        onClick={() => toggleObjection(obj)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors text-left ${
+                          selected
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        }`}
+                      >
+                        {selected && "✓ "}
+                        {obj}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Behavior sliders */}
@@ -350,7 +402,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                     setForm((f) => ({ ...f, client_description: e.target.value }))
                   }
                   rows={3}
-                  placeholder="e.g. Mid-level marketing manager at a 50-person company. Skeptical of new software after a bad experience with a CRM rollout last year. Values ROI and quick onboarding."
+                  placeholder="e.g. 42-year-old father of two, works in construction. Skeptical of salespeople but cares deeply about his family's security. Hasn't updated his policy since his kids were born."
                   className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-none"
                 />
               </div>
@@ -392,11 +444,17 @@ export default function ScenariosClient({ initialScenarios }: Props) {
               </div>
             </div>
 
+            {formError && (
+              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm">
+                {formError}
+              </div>
+            )}
+
             <div className="flex gap-3 pt-2">
               <button
                 onClick={handleSave}
                 disabled={saving || !form.name}
-                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-200 text-white rounded-xl text-sm font-medium transition-colors"
+                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-200 disabled:text-gray-400 text-white rounded-xl text-sm font-medium transition-colors"
               >
                 {saving ? "Saving..." : editingId ? "Save Changes" : "Create Scenario"}
               </button>
@@ -457,8 +515,8 @@ export default function ScenariosClient({ initialScenarios }: Props) {
 
             {Array.isArray(s.objection_pool) && s.objection_pool.length > 0 && (
               <p className="text-gray-500 text-xs mt-2">
-                Objections: {s.objection_pool.slice(0, 4).join(", ")}
-                {s.objection_pool.length > 4 ? "..." : ""}
+                Objections: {s.objection_pool.slice(0, 3).join(", ")}
+                {s.objection_pool.length > 3 ? ` +${s.objection_pool.length - 3} more` : ""}
               </p>
             )}
           </div>

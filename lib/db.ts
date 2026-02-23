@@ -195,9 +195,10 @@ export async function updateScenario(
       objection_pool     = COALESCE(${data.objection_pool ? JSON.stringify(data.objection_pool) : null}::jsonb, objection_pool),
       rules              = COALESCE(${data.rules ? JSON.stringify(data.rules) : null}::jsonb, rules),
       success_criteria   = COALESCE(${data.success_criteria ? JSON.stringify(data.success_criteria) : null}::jsonb, success_criteria),
-      client_description = COALESCE(${data.client_description ?? null}, client_description),
-      client_age         = COALESCE(${data.client_age ?? null}, client_age),
-      voice              = COALESCE(${data.voice ?? null}, voice)
+      client_description = ${data.client_description ?? null},
+      client_age         = ${data.client_age !== undefined ? data.client_age : null},
+      voice              = COALESCE(${data.voice ?? null}, voice),
+      updated_at         = NOW()
     WHERE id = ${id}
     RETURNING *
   `;
