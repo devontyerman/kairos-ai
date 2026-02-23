@@ -359,28 +359,17 @@ export default function ScenariosClient({ initialScenarios }: Props) {
             <div className="space-y-3">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Training Objective</p>
               <p className="text-xs text-gray-500">Select the primary skill area. Reps are scored higher for excelling in this specific area.</p>
-              <div className="grid grid-cols-1 gap-2">
+              <select
+                value={form.training_objective}
+                onChange={(e) => setForm((f) => ({ ...f, training_objective: e.target.value }))}
+                className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500"
+              >
                 {TRAINING_OBJECTIVES.map((obj) => (
-                  <button
-                    key={obj.value}
-                    type="button"
-                    onClick={() => setForm((f) => ({ ...f, training_objective: obj.value }))}
-                    className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-colors ${
-                      form.training_objective === obj.value
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 bg-gray-50 hover:border-gray-300"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-900 text-sm">{obj.label}</span>
-                      {form.training_objective === obj.value && (
-                        <span className="text-blue-600 text-xs font-semibold">Selected</span>
-                      )}
-                    </div>
-                    <p className="text-gray-500 text-xs mt-0.5">{obj.description}</p>
-                  </button>
+                  <option key={obj.value} value={obj.value}>
+                    {obj.label} — {obj.description}
+                  </option>
                 ))}
-              </div>
+              </select>
             </div>
 
             {/* ── Persona ── */}
@@ -483,7 +472,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                     "They become more open once they feel heard. " +
                     "They will hang up if the rep seems pushy in the first 60 seconds.\""
                   }
-                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-none"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-y"
                 />
                 <p className="text-gray-400 text-xs mt-1">
                   Use this to add hidden backstory, specific reactions, triggers, or behavioral quirks that make the prospect more realistic.
@@ -505,7 +494,7 @@ export default function ScenariosClient({ initialScenarios }: Props) {
                     onChange={(e) => setForm((f) => ({ ...f, client_description: e.target.value }))}
                     rows={3}
                     placeholder="e.g. 42-year-old father of two, works in construction. Cares deeply about his family but hasn't updated coverage since his kids were born."
-                    className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-none"
+                    className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:border-blue-500 resize-y"
                   />
                 </div>
 
