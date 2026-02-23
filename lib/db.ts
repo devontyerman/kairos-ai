@@ -39,6 +39,9 @@ export interface Scenario {
     [key: string]: unknown;
   };
   success_criteria: string[];
+  training_objective: string;
+  session_goal: "close" | "appointment";
+  behavior_notes: string;
   client_description: string;
   client_age: number | null;
   voice: string;
@@ -164,7 +167,11 @@ export async function createScenario(
   data: Omit<Scenario, "id" | "created_at" | "updated_at">
 ): Promise<Scenario> {
   const rows = await sql`
-    INSERT INTO scenarios (name, product_type, difficulty, persona_style, objection_pool, rules, success_criteria, client_description, client_age, voice)
+    INSERT INTO scenarios (
+      name, product_type, difficulty, persona_style, objection_pool, rules,
+      success_criteria, training_objective, session_goal, behavior_notes,
+      client_description, client_age, voice
+    )
     VALUES (
       ${data.name},
       ${data.product_type},
@@ -172,7 +179,10 @@ export async function createScenario(
       ${data.persona_style},
       ${JSON.stringify(data.objection_pool)},
       ${JSON.stringify(data.rules)},
-      ${JSON.stringify(data.success_criteria)},
+      ${JSON.stringify(data.success_criteria ?? [])},
+      ${data.training_objective ?? "objection-handling"},
+      ${data.session_goal ?? "close"},
+      ${data.behavior_notes ?? ""},
       ${data.client_description ?? ""},
       ${data.client_age ?? null},
       ${data.voice ?? "alloy"}
@@ -195,6 +205,9 @@ export async function updateScenario(
       objection_pool     = COALESCE(${data.objection_pool ? JSON.stringify(data.objection_pool) : null}::jsonb, objection_pool),
       rules              = COALESCE(${data.rules ? JSON.stringify(data.rules) : null}::jsonb, rules),
       success_criteria   = COALESCE(${data.success_criteria ? JSON.stringify(data.success_criteria) : null}::jsonb, success_criteria),
+      training_objective = COALESCE(${data.training_objective ?? null}, training_objective),
+      session_goal       = COALESCE(${data.session_goal ?? null}, session_goal),
+      behavior_notes     = ${data.behavior_notes ?? null},
       client_description = ${data.client_description ?? null},
       client_age         = ${data.client_age !== undefined ? data.client_age : null},
       voice              = COALESCE(${data.voice ?? null}, voice),

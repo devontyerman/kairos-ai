@@ -8,6 +8,7 @@ import {
   saveReport,
   CoachingReport,
 } from "@/lib/db";
+import { getObjectiveLabel } from "@/lib/scenario-prompt";
 
 export const runtime = "nodejs";
 
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
       ? await getScenario(session.scenario_id)
       : null;
 
-    const report = await generateCoachingReport(transcript ?? [], scenario?.name ?? "Unknown Scenario");
+    const report = await generateCoachingReport(transcript ?? [], scenario);
     await saveReport(sessionId, report.overall_score, report);
 
     return NextResponse.json({ sessionId, report });
@@ -69,33 +70,48 @@ export async function POST(req: NextRequest) {
 
 async function generateCoachingReport(
   transcript: TranscriptTurn[],
-  scenarioName: string
+  scenario: Awaited<ReturnType<typeof getScenario>>
 ): Promise<CoachingReport> {
   const openaiKey = process.env.OPENAI_API_KEY;
   if (!openaiKey) throw new Error("OPENAI_API_KEY is not set");
+
+  const scenarioName = scenario?.name ?? "Unknown Scenario";
+  const trainingObjective = scenario?.training_objective ?? "objection-handling";
+  const objectiveLabel = getObjectiveLabel(trainingObjective);
+  const sessionGoal = scenario?.session_goal ?? "close";
 
   const transcriptText = transcript
     .map((t) => `${t.speaker === "agent" ? "SALES REP" : "PROSPECT"}: ${t.text}`)
     .join("\n");
 
-  const prompt = `You are an expert sales coach analyzing a training call transcript.
+  const goalContext = sessionGoal === "close"
+    ? "The rep's goal was to CLOSE the policy on this call."
+    : "The rep's goal was to SET AN APPOINTMENT for a follow-up meeting.";
+
+  const prompt = `You are an expert life insurance sales coach analyzing a training call transcript.
 
 SCENARIO: ${scenarioName}
+PRODUCT: ${scenario?.product_type ?? "Life Insurance"}
+${goalContext}
+
+TRAINING OBJECTIVE — WEIGHT SCORING HERE:
+The primary skill being trained this session is: "${objectiveLabel}"
+When scoring this call, give significantly higher weight to how well the rep performed in this specific area. Strengths, areas to improve, missed opportunities, and drills should all be oriented toward this objective where relevant.
 
 TRANSCRIPT:
 ${transcriptText || "(No transcript recorded)"}
 
-Analyze this sales call and return a JSON coaching report. You MUST return valid JSON only — no markdown, no code blocks, no extra text.
+Analyze this life insurance sales call and return a JSON coaching report. You MUST return valid JSON only — no markdown, no code blocks, no extra text.
 
 The JSON must match this exact schema:
 {
-  "summary": "2-3 sentence overview of the call",
-  "overall_score": <integer 0-100>,
+  "summary": "2-3 sentence overview of the call, mentioning whether the rep achieved the session goal",
+  "overall_score": <integer 0-100, weighted heavily toward performance on the training objective>,
   "strengths": ["strength 1", "strength 2"],
   "areas_to_improve": ["area 1", "area 2"],
   "objections_detected": [
     {
-      "objection": "objection type (e.g. price)",
+      "objection": "objection type (e.g. price, spouse, need to think)",
       "count": <integer>,
       "example_snippet": "exact quote from transcript",
       "handling_score": <integer 0-10>
@@ -110,21 +126,21 @@ The JSON must match this exact schema:
   "drills": [
     {
       "title": "drill name",
-      "description": "how to practice",
+      "description": "how to practice this specific skill",
       "goal": "what this improves"
     },
     {
       "title": "drill name",
-      "description": "how to practice",
+      "description": "how to practice this specific skill",
       "goal": "what this improves"
     },
     {
       "title": "drill name",
-      "description": "how to practice",
+      "description": "how to practice this specific skill",
       "goal": "what this improves"
     }
   ],
-  "next_session_plan": "Concrete focus areas and goals for the next training session"
+  "next_session_plan": "Concrete focus areas and goals for the next training session, tied to the training objective"
 }`;
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -141,7 +157,7 @@ The JSON must match this exact schema:
         {
           role: "system",
           content:
-            "You are an expert sales coach. Return only valid JSON, no markdown.",
+            "You are an expert life insurance sales coach. Return only valid JSON, no markdown.",
         },
         { role: "user", content: prompt },
       ],
@@ -151,7 +167,6 @@ The JSON must match this exact schema:
   if (!response.ok) {
     const errText = await response.text();
     console.error("OpenAI analysis error:", errText);
-    // Return a minimal fallback report
     return fallbackReport(scenarioName);
   }
 
@@ -160,7 +175,6 @@ The JSON must match this exact schema:
 
   try {
     const parsed = JSON.parse(content) as CoachingReport;
-    // Ensure score is always set
     parsed.overall_score = parsed.overall_score ?? 50;
     return parsed;
   } catch {
