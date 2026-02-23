@@ -125,21 +125,19 @@ The JSON must match this exact schema:
   ],
   "drills": [
     {
-      "title": "drill name",
-      "description": "how to practice this specific skill",
-      "goal": "what this improves"
-    },
-    {
-      "title": "drill name",
-      "description": "how to practice this specific skill",
-      "goal": "what this improves"
-    },
-    {
-      "title": "drill name",
-      "description": "how to practice this specific skill",
-      "goal": "what this improves"
+      "title": "specific drill name tied to an observed weakness",
+      "description": "Step-by-step instructions referencing the EXACT moment in the transcript where the rep struggled. Quote the specific line, explain what went wrong, and describe how to practice fixing it.",
+      "goal": "the specific skill this improves, tied to the training objective",
+      "example_script": "A word-for-word script the rep should practice saying instead. Write it as if the rep is speaking directly to the prospect in that exact scenario moment."
     }
   ],
+
+  CRITICAL DRILL INSTRUCTIONS:
+  - Return exactly 3 drills
+  - Each drill MUST reference a specific moment from the transcript — quote the rep's actual words that need improvement
+  - Each drill MUST include an example_script with a word-for-word alternative the rep should practice
+  - Do NOT give generic advice like "practice active listening" — instead say exactly WHAT to say and WHEN
+  - Tie each drill to a specific weakness you identified, not to general sales theory
   "next_session_plan": "Concrete focus areas and goals for the next training session, tied to the training objective"
 }`;
 
@@ -196,16 +194,19 @@ function fallbackReport(scenarioName: string): CoachingReport {
         title: "Mirror & Label",
         description: "Practice repeating the last 3 words your prospect says and labeling their emotions.",
         goal: "Build rapport and show empathy",
+        example_script: "It sounds like you're feeling uncertain about the timing. Tell me more about what's holding you back.",
       },
       {
         title: "Objection Pivot",
         description: "Write down 5 common objections and practice pivoting each to a question.",
         goal: "Handle objections without getting defensive",
+        example_script: "I completely understand that concern. Let me ask you this — if we could find a plan that fits your budget, would that change how you feel about moving forward today?",
       },
       {
         title: "The Silence Game",
         description: "After presenting value, stay silent for 10 seconds. Practice not filling the void.",
         goal: "Let prospects talk and reveal their real concerns",
+        example_script: "So based on everything we've discussed, this plan gives your family $250,000 in protection for just $45 a month. [PAUSE — wait for prospect to respond]",
       },
     ],
     next_session_plan:

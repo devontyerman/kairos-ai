@@ -280,6 +280,16 @@ export default async function ResultsPage({ params }: Props) {
                       <p className="text-gray-600 text-xs mb-2">
                         {drill.description}
                       </p>
+                      {drill.example_script && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-2">
+                          <p className="text-blue-800 text-xs font-medium mb-1">
+                            Try saying:
+                          </p>
+                          <p className="text-blue-700 text-xs italic leading-relaxed">
+                            &ldquo;{drill.example_script}&rdquo;
+                          </p>
+                        </div>
+                      )}
                       <p className="text-blue-500 text-xs">
                         Goal: {drill.goal}
                       </p>

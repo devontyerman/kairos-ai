@@ -13,6 +13,7 @@ export default function AppNav({ userRole }: Props) {
 
   const navLinks = [
     { href: "/train", label: "Train" },
+    { href: "/profile", label: "Profile" },
     ...(userRole === "admin"
       ? [{ href: "/admin", label: "Admin" }]
       : []),

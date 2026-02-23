@@ -91,6 +91,7 @@ export interface CoachingReport {
     title: string;
     description: string;
     goal: string;
+    example_script?: string;
   }>;
   next_session_plan: string;
 }
