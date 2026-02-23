@@ -516,7 +516,7 @@ export default async function ProfilePage() {
                         <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5">
                           {i + 1}
                         </span>
-                        <span className="line-clamp-3">{tip}</span>
+                        <span>{tip}</span>
                       </li>
                     ))}
                   </ul>
