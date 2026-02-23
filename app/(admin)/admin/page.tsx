@@ -1,7 +1,12 @@
 export const dynamic = "force-dynamic";
 
 import { requireAdmin } from "@/lib/auth";
-import { listUsers, listScenarios, listSessions } from "@/lib/db";
+import {
+  listUsers,
+  listScenarios,
+  listSessions,
+  listSessionsWithDetails,
+} from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
@@ -14,13 +19,46 @@ export default async function AdminDashboard() {
     redirect("/train");
   }
 
-  const [users, scenarios, sessions] = await Promise.all([
+  const [users, scenarios, sessions, detailedSessions] = await Promise.all([
     listUsers(),
     listScenarios(),
     listSessions(),
+    listSessionsWithDetails(),
   ]);
 
   const recentSessions = sessions.slice(0, 5);
+
+  // ─── Cost estimates ───────────────────────────────────────────────────────
+  const REALTIME_COST_PER_MIN = 0.30; // ~$0.06 input + ~$0.24 output per min
+  const REPORT_COST_EACH = 0.03; // GPT-4o text analysis per session
+
+  const completedSessions = detailedSessions.filter(
+    (s) => s.ended_at && s.duration_seconds && s.duration_seconds > 60
+  );
+
+  const totalMinutes = completedSessions.reduce(
+    (acc, s) => acc + (s.duration_seconds ?? 0) / 60,
+    0
+  );
+  const realtimeCost = totalMinutes * REALTIME_COST_PER_MIN;
+  const reportCost = completedSessions.length * REPORT_COST_EACH;
+  const totalCost = realtimeCost + reportCost;
+
+  // This month's costs
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const thisMonthSessions = completedSessions.filter(
+    (s) => new Date(s.started_at) >= monthStart
+  );
+  const thisMonthMinutes = thisMonthSessions.reduce(
+    (acc, s) => acc + (s.duration_seconds ?? 0) / 60,
+    0
+  );
+  const thisMonthCost =
+    thisMonthMinutes * REALTIME_COST_PER_MIN +
+    thisMonthSessions.length * REPORT_COST_EACH;
+
+  const formatCost = (n: number) => `$${n.toFixed(2)}`;
 
   return (
     <div className="min-h-screen bg-white">
@@ -66,6 +104,46 @@ export default async function AdminDashboard() {
               <div className="text-gray-500 text-sm">{stat.label}</div>
             </div>
           ))}
+        </div>
+
+        {/* Estimated OpenAI Costs */}
+        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-semibold text-gray-900">
+                Estimated OpenAI Costs
+              </h2>
+              <p className="text-gray-400 text-xs mt-0.5">
+                Based on session durations — ~$0.30/min realtime + ~$0.03/report
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <div className="text-2xl font-bold text-gray-900">
+                {formatCost(thisMonthCost)}
+              </div>
+              <div className="text-gray-500 text-xs">This Month</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">
+                {formatCost(totalCost)}
+              </div>
+              <div className="text-gray-500 text-xs">All Time</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">
+                {Math.round(thisMonthMinutes)}m
+              </div>
+              <div className="text-gray-500 text-xs">Minutes This Month</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">
+                {thisMonthSessions.length}
+              </div>
+              <div className="text-gray-500 text-xs">Sessions This Month</div>
+            </div>
+          </div>
         </div>
 
         {/* Quick actions */}
